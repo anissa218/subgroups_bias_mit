@@ -16,15 +16,25 @@ pip install -r my_requirements.txt
 
 ### Dataset
 
-Due to data use agreements, the UKBB retinal images cannot be shared. For those with access, we use R eye images from Datafield 21015. The code could be easily adapted for other retinal imaging or medical imaging datasets.
+**MNIST** images are freely available open-source and can be downloaded from the following [link](https://www.kaggle.com/datasets/hojjatk/mnist-dataset).
+
+**CheXPert** images are also publicly available and can be downloaded through this [website](https://stanfordmlgroup.github.io/competitions/chexpert/). 
+Additionally, pacemaker annotations were used, which are kindly provided in this [repository](https://github.com/HarryAnthony/Mahalanobis-OOD-detection).
 
 ### Constructing biased datasets and subgroups
 
-See `mynotebooks/UKBB Preprocessing.ipynb` for information on preprocessing of relevant sensitive attributes, splitting into train/val/test sets, and pickling images.
+To generate the biased training/val datasets and unbiased test dataset and to construct all the subgroup annotations, run the follwoing code. 
+```
+python make_mnist_dataset.py --raw_data_folder [path_to_raw_data] --root_folder [root_path] --folder_name [folder_name]
+python make_cxp_dataset.py --raw_data_folder [path_to_raw_data] --manual_annotations_folder [path_to_manual_annotations] --root_folder [root_path] --folder_name [folder_name]
+```
 
+Preprocessed images and splits with the additional metadata are saved in data/[dataset_name]/pkls and data/[dataset_name]/respectively
+ 
 After preprocessing, specify the paths of the metadata and pickle files in `configs/datasets.json`.
 
 ### Run a single experiment
+
 ```python
 python main.py --experiment [experiment] --experiment_name [experiment_name] --dataset_name [dataset_name] \
      --backbone [backbone] --total_epochs [total_epochs] --sensitive_name [sensitive_name] \
@@ -32,17 +42,31 @@ python main.py --experiment [experiment] --experiment_name [experiment_name] --d
      --output_dim [output_dim] --num_classes [num_classes]
 ```
 
-To reproduce experiments in the paper (replace experiment, sensitive_name, and sens_classes accordingly):
-
-```python
-python main.py --experiment baseline --wandb_name [wandb_name] --data_folder [data_folder] --early_stopping 10 --class_name adj_bp --dataset_name UKBB_RET --pretrained True --total_epochs 100 --sensitive_name Centre --batch_size 512 --sens_classes 6 --output_dim 1 --num_classes 1 --random_seed 42 --backbone InceptionV3 --lr 0.0005
-```
-
 See `parse_args.py` for more options.
 
+### Reproduce our experiments
+
+To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation and sens_classes accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly.
 
 
-### Analyse results
+```python
+## MNIST ##
+# baseline model
+python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --groupdro_adj 1 --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1  --random_seed [random_seed]
+# mitigation model
+python main.py --experiment [mitigation_method] --backbone SimpleCNN --wandb_name [wandb_name] --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --sensitive_name [subgroup] --sens_classes [n_subgroups] --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1  --random_seed [random_seed]
+
+## CXP ##
+# baseline model
+python main.py --experiment baseline --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1 --random_seed [random_seed]
+# mitigation model
+python main.py --experiment [mitigation_method] --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --sensitive_name [subgroup] --sens_classes [n_subgroups] --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1 --random_seed [random_seed]
+```
+
+
+### Process results
+
+Once all models have trained, 
 
 ## Citation
 Please consider citing our paper if you find this repo useful.
