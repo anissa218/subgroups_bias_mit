@@ -48,6 +48,10 @@ See `parse_args.py` for more options.
 
 To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation and sens_classes accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly.
 
+Possible subgroups are:
+- for gDRO and resampling: ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
+- for DomainInd: ['Artefact','A_4','Sex','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+- for CFair: ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
 
 ```python
 ## MNIST ##
@@ -66,16 +70,27 @@ python main.py --experiment [mitigation_method] --early_stopping 10 --backbone c
 
 ### Process results
 
-Once all models have trained, 
+Once all models have trained, process results by running the following commands:
+
+```python
+python save_mnist_results.py --experiment [mitigation_method] --root_folder [path_to_root_folder] --data_folder [data_folder] --wandb_name [wandb_name] --random_seed_folders [random_seed_folders]
+python save_cxp_results.py --experiment [mitigation_method] --root_folder [path_to_root_folder] --data_folder [data_folder] --wandb_name [wandb_name] --random_seed_folders [random_seed_folders]
+```
+This will save dictionaries containing relevant analyses for each experiment in the /results folder.
+
+### Analyse results
+
+We provide example code to analyse results and reproduce the plots made in the paper in notebooks/[name.ipynb]
 
 ## Citation
 Please consider citing our paper if you find this repo useful.
 ```
 TODO
 ```
+
 ## Acknowledgement
 
-We thank MEDFAIR authors and their detailed repo which provided initial code for this work.
+We thank MEDFAIR authors and their detailed repo which provided initial code for this work and Harry Anthony for providing CheXPert pacemaker annotations.
 ```
 @inproceedings{zong2023medfair,
     title={MEDFAIR: Benchmarking Fairness for Medical Imaging},
@@ -83,5 +98,14 @@ We thank MEDFAIR authors and their detailed repo which provided initial code for
     booktitle={International Conference on Learning Representations (ICLR)},
     year={2023},
 }
+@incollection{Anthony_2023,
+	doi = {10.1007/978-3-031-44336-7_14},
+	url = {https://doi.org/10.1007%2F978-3-031-44336-7_14},
+	year = 2023,
+	publisher = {Springer Nature Switzerland},
+	pages = {136--146},
+	author = {Harry Anthony and Konstantinos Kamnitsas},
+	title = {On the Use of Mahalanobis Distance for Out-of-distribution Detection with Neural Networks for Medical Imaging},
+	booktitle = {Uncertainty for Safe Utilization of Machine Learning in Medical Imaging}}
 ```
 
