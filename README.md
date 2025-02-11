@@ -27,7 +27,7 @@ Additionally, pacemaker annotations were used, which are kindly provided in this
 
 ### Constructing biased datasets and subgroups
 
-To generate the biased training/val datasets and unbiased test dataset and to construct all the subgroup annotations, run the follwoing code. 
+To generate the biased training/val datasets and unbiased test dataset and to construct all the subgroup annotations, run the following code. 
 ```
 python make_mnist_dataset.py --raw_data_folder [path_to_raw_data] --root_folder [root_path] --folder_name [folder_name]
 python make_cxp_dataset.py --raw_data_folder [path_to_raw_data] --manual_annotations_folder [path_to_manual_annotations] --root_folder [root_path] --folder_name [folder_name]
