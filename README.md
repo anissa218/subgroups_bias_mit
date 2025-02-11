@@ -33,7 +33,7 @@ python make_mnist_dataset.py --raw_data_folder [path_to_raw_data] --root_folder 
 python make_cxp_dataset.py --raw_data_folder [path_to_raw_data] --manual_annotations_folder [path_to_manual_annotations] --root_folder [root_path] --folder_name [folder_name]
 ```
 
-Preprocessed images and splits with the additional metadata are saved in data/[dataset_name]/pkls and data/[dataset_name]/splits respectively
+Preprocessed images and splits with the additional metadata are saved in data/[dataset_name]/pkls and data/[dataset_name]/splits respectively.
  
 After preprocessing, specify the paths of the metadata and pickle files in `configs/datasets.json`.
 
