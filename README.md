@@ -79,11 +79,11 @@ Once all models have trained, process results by running the following commands:
 ```python
 python save_results.py --data [CheXpert or mnist] --method [mitigation_method] --root_folder [path_to_root_folder] --experiment_folder [parent_dir_where_experiments_are_saved] --data_folder [data_folder] --wandb_name [wandb_name] --random_seed_folders [random_seed_folders]
 ```
-This will save dictionaries containing relevant analyses for each experiment in the processed_results/ folder.
+This will save dictionaries containing relevant analyses for each experiment in the `processed_results/` folder.
 
 ### Analyse results
 
-We provide example code to analyse results and reproduce the plots made in the paper in the notebooks/ folder.
+We provide example code to analyse results and reproduce the plots made in the paper in the `notebooks/` folder.
 
 ## Citation
 Please consider citing our paper if you find this repo useful.
