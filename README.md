@@ -14,7 +14,7 @@ TODO
 Python >= 3.8+ and Pytorch >=1.10 are required for running the code.
 
 ```python
-cd MEDFAIR/
+cd subgroups_bias_mit/
 pip install -r my_requirements.txt
 ```
 
