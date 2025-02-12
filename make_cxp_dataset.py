@@ -19,10 +19,10 @@ from utils.make_datasets import *
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate CXP dataset with bias.")
-    parser.add_argument("--raw_data_folder", type=str, required=True, default = '/well/papiez/users/hri611/python/MEDFAIR-PROJECT/subgroups_bias_mit/data/CheXpert-v1.0-small/', help="Path to the raw CXP data folder (assumes this contains a 'train.csv' file) ")
-    parser.add_argument("--path_to_annotations", type=str, required=True, default = '/well/papiez/users/hri611/python/MEDFAIR-PROJECT/subgroups_bias_mit/data/other_data/chexpert/manual_annotations/', help="Path to the annotations folder")
-    parser.add_argument("--save_data_folder", type=str, required=True, default = '/well/papiez/users/hri611/python/MEDFAIR-PROJECT/subgroups_bias_mit/data/CheXpert-v1.0-small/', help="Root directory where processed data will be saved")
-    parser.add_argument("--folder_name", type=str, required=True, default = 'engineered_bias_pacemaker_is_1', help="Folder name for saving the dataset")
+    parser.add_argument("--raw_data_folder", type=str, required=True, help="Path to the raw CXP data folder (assumes this contains a 'train.csv' file) ")
+    parser.add_argument("--path_to_annotations", type=str, required=True, help="Path to the annotations folder")
+    parser.add_argument("--save_data_folder", type=str, required=True, help="Root directory where processed data will be saved")
+    parser.add_argument("--folder_name", type=str, required=True, help="Folder name for saving the dataset")
     return parser.parse_args()
 
 if __name__ == "__main__":

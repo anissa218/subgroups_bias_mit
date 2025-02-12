@@ -2,7 +2,7 @@
     "CXP":
     {
         "image_feature_path": "yourpath",
-        "root_path": "/gpfs3/well/papiez/users/hri611/python/MEDFAIR-PROJECT/MEDFAIR/data/CheXpert-v1.0-small",
+        "root_path": "yourpath",
             "pickle_train_path": "pkls/train_images.pkl",
             "pickle_val_path": "pkls/val_images.pkl",
             "pickle_test_path": "pkls/test_images.pkl",
@@ -13,7 +13,7 @@
     "MNIST":
     {
         "image_feature_path": "yourpath",
-        "root_path":"/gpfs3/well/papiez/users/hri611/python/MEDFAIR-PROJECT/MEDFAIR/data/mnist/",
+        "root_path":"yourpath",
         "pickle_train_path": "pkls/train_images.pt",
         "pickle_val_path": "pkls/val_images.pt",
         "pickle_test_path": "pkls/test_images.pt",
