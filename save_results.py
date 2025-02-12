@@ -15,12 +15,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Process and save CXP and MNIST results.")
     parser.add_argument("--data", type=str, default = 'CheXpert-v1.0-small', choices = ['CheXpert-v1.0-small','mnist'], help="Data to use: CheXpert-v1.0-small or mnist")
     parser.add_argument('--method', type=str, required=True, choices = ['GroupDRO', 'baseline', 'resampling', 'DomainInd', 'CFair'], help="Method to use: GroupDRO, DomainInd, CFair, resampling or baseline.")
-    parser.add_argument("--root_folder", type=str, default = '/well/papiez/users/hri611/python/MEDFAIR-PROJECT/MEDFAIR', help="Path to the root folder (where data, results etc. are all saved) ")
-    parser.add_argument("--experiment_folder", type=str, default = 'your_path/fariness_data/model_records/', help="Path to parent directory where model runs are stored")
-    parser.add_argument("--data_folder", type=str, default = 'engineered_bias_pacemaker_is_1', help="Data configuration used for experiments") # or 'two_variables
+    parser.add_argument("--root_folder", type=str, required = True, help="Path to the root folder (where data, results etc. are all saved) ")
+    parser.add_argument("--experiment_folder", type=str, required = True, help="Path to parent directory where model runs are stored")
+    parser.add_argument("--data_folder", type=str, required = True, help="Data configuration used for experiments") # or 'two_variables
     parser.add_argument("--random_seed_folders", nargs = '+', default = ['42','43','44'], help="Random seeds used for experiments")
-    parser.add_argument("--wandb_name", type=str, default = 'ebp1_bs256_lr5e4_features', help="Name to identify run and processed results")
-    parser.add_argument("--experiments", type=str, default = [],help = "list of subgroup experiments to analyse")
+    parser.add_argument("--wandb_name", type=str, required = True, help="Name to identify run and processed results")
+    parser.add_argument("--experiments", type=str, default = [], help = "list of subgroup experiments to analyse")
     parser.add_argument("--model_backbone", type=str, default = [], help="Model backbone used for experiments")
     return parser.parse_args()
 
