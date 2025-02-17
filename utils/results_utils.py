@@ -165,7 +165,7 @@ def preprocess_chexpert_data(path_to_preds,path_to_splits,threshold_function = f
 
     return metadata_df
 
-def get_val_train_preds(path_to_results_folder,path_to_train_splits,path_to_val_splits,preprocessing_function=preprocess_ukbb_data,pretrained=True,threshold_function = find_balanced_acc_threshold):
+def get_val_train_preds(path_to_results_folder,path_to_train_splits,path_to_val_splits,preprocessing_function=preprocess_mnist_data,pretrained=True,threshold_function = find_balanced_acc_threshold):
 
     '''
     Function to get the predictions for the validation and training sets.
