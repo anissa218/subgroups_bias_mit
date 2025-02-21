@@ -160,7 +160,7 @@ cython_debug/
 #.idea/
 
 # bash files
-.sh
+*.sh
 
 # specific folders
 data/*
@@ -170,7 +170,9 @@ processed_results/*
 !processed_results/.gitkeepyour_path/
 bash_scripts/
 your_path/
+wandb/
 
 # personal results files
-.pkl
-.csv
+*.pkl
+*.csv
+*.out
