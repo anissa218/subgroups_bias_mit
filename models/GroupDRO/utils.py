@@ -37,8 +37,8 @@ class LossComputer:
         # compute per-sample and per-group losses
         per_sample_losses = self.criterion(yhat, y)
         group_loss, group_count = self.compute_group_avg(per_sample_losses, group_idx)
-
-       group_acc, group_count = self.compute_group_avg((yhat > 0.5).float(), group_idx)
+        
+        group_acc, group_count = self.compute_group_avg((yhat > 0.5).float(), group_idx)
 
         # update historical losses - saves loss for each group 
         self.update_exp_avg_loss(group_loss, group_count)
