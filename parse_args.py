@@ -128,8 +128,10 @@ def collect_args(args=None):
     parser.add_argument('--class_coeff', type=float, default=1.0, help='coefficient for classification loss of LAFTR')
     parser.add_argument('--fair_coeff', type=float, default=1.0, help='coefficient for fair loss of LAFTR')
     parser.add_argument('--model_var', type=str, default='laftr-eqodd', help='model variation for LAFTR')
-    # CFair
     
+    # CFair
+    parser.add_argument('--mu', type=float, default=0.1, help='coefficient for adversarial loss of CFair')
+   
     # LNL
     parser.add_argument('--_lambda', type=float, default=0.1, help='coefficient for loss of LNL')
 
