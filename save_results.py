@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     if method == 'GroupDRO':
         loss_dict = get_mnist_loss_results(root_folder, experiment_folder, model_name, data_folder,random_seed_folders,experiments,pred_file,subgroups)
-        with open(f'{data}_{method}_{wandb_name}_loss_dict_test.pkl', 'wb') as f:
+        with open(f'{data}_{method}_{wandb_name}_loss_dict.pkl', 'wb') as f:
             pickle.dump(loss_dict, f)
         
         # also add results from baseline model if 'groupDRO'
@@ -131,9 +131,9 @@ if __name__ == "__main__":
         test_results_dict.update(baseline_test_results_dict)
         train_val_dict.update(baseline_train_val_results_dict)
 
-        with open(f'processed_results/{data}_{method}_{wandb_name}_train_val_results_dict_test.pkl', 'wb') as f:
+        with open(f'processed_results/{data}_{method}_{wandb_name}_train_val_results_dict.pkl', 'wb') as f:
             pickle.dump(train_val_dict, f)
 
 
-    with open(f'processed_results/{data}_{method}_{wandb_name}_test_results_dict_test.pkl', 'wb') as f:
+    with open(f'processed_results/{data}_{method}_{wandb_name}_test_results_dict.pkl', 'wb') as f:
         pickle.dump(test_results_dict, f)
