@@ -40,7 +40,7 @@ After preprocessing, specify the paths of the metadata and pickle files in `conf
 ### Run a single experiment
 
 ```python
-python main.py --experiment [experiment] --experiment_name [experiment_name] --dataset_name [dataset_name] \
+python main.py --experiment [experiment] --wandb_name [experiment_name] --dataset_name [dataset_name] \
      --backbone [backbone] --total_epochs [total_epochs] --sensitive_name [sensitive_name] \
      --batch_size [batch_size] --lr [lr] --sens_classes [sens_classes]  --val_strategy [val_strategy] \
      --output_dim [output_dim] --num_classes [num_classes]
@@ -50,7 +50,7 @@ See `parse_args.py` for more options.
 
 ### Reproduce our experiments
 
-To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation and sens_classes accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly.
+To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation [sensitive_name] and [sens_classes] accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly.
 
 Possible subgroups are:
 - for gDRO and resampling: ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
