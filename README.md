@@ -40,7 +40,7 @@ After preprocessing, specify the paths of the metadata and pickle files in `conf
 ### Run a single experiment
 
 ```python
-python main.py --experiment [experiment] --experiment_name [experiment_name] --dataset_name [dataset_name] \
+python main.py --experiment [experiment] --wandb_name [experiment_name] --dataset_name [dataset_name] \
      --backbone [backbone] --total_epochs [total_epochs] --sensitive_name [sensitive_name] \
      --batch_size [batch_size] --lr [lr] --sens_classes [sens_classes]  --val_strategy [val_strategy] \
      --output_dim [output_dim] --num_classes [num_classes]
