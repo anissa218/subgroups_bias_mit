@@ -105,7 +105,7 @@ if __name__ == "__main__":
         with open(f'{data}_{method}_{wandb_name}_loss_dict.pkl', 'wb') as f:
             pickle.dump(loss_dict, f)
         
-        also add results from baseline model if 'groupDRO'
+        # also add results from baseline model if 'groupDRO'
 
         experiments = ['AY']
         experiment = experiments[0]
