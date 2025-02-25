@@ -105,12 +105,16 @@ if __name__ == "__main__":
         with open(f'{data}_{method}_{wandb_name}_loss_dict.pkl', 'wb') as f:
             pickle.dump(loss_dict, f)
         
-        # also add results from baseline model if 'groupDRO'
+        also add results from baseline model if 'groupDRO'
 
         experiments = ['AY']
         experiment = experiments[0]
         pred_file = 'pretrained_pred.csv'
-        model_name = os.path.join(model_backbone, 'baseline', wandb_name)
+        if data == 'mnist':
+            model_name = os.path.join(model_backbone, 'baseline_simple', wandb_name)
+
+        else:
+            model_name = os.path.join(model_backbone, 'baseline', wandb_name)
 
         baseline_train_val_results_dict = get_mnist_train_val_results(root_folder, experiment_folder, model_name, data_folder,random_seed_folders,experiments,pred_file,subgroups,preprocessing_function=preprocessing_function,data=data)
         
