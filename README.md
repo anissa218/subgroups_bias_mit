@@ -64,7 +64,7 @@ To reproduce all the MNIST and CXP experiments in the paper, run the following c
 Possible subgroups are:
 - for gDRO and resampling: `['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']`
 - for DomainInd: `['A','A_4','S','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
-- for CFair: ['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+- for CFair: `['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
 
 ```python
 # MNIST
