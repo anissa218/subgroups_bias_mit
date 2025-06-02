@@ -6,7 +6,7 @@ NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/
 
 ## Introduction
 
-In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our key finding is that **subgroup choice strongly influences fairness and generalisation**, sometimes harming performance more than applying no mitigation at all. We highlight the importance of careful subgroup definition in bias mitigation and present it as an alternative lever for improving the robustness and fairness of machine learning models.
+In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our main conclusion is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we argue that subgroup definition is as important of a step as, e.g., the choice of mitigation method, and requires careful consideration.
 
 This repo includes:
 - Code to generate biased datasets and different subgroups
@@ -59,12 +59,9 @@ See `parse_args.py` for all configurable flags.
 
 ### Reproduce our experiments
 
-To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in `[GroupDRO, resampling, DomainInd, CFair]` and varying the subgroup for mitigation `[sensitive_name]` and `[sens_classes]` accordingly. Also change `[wandb_name]`, `[data_folder]`, and `[random_seed]` accordingly. We provide example training scripts for training a baseline model with ERM for the four datasets with our hyperparameters.
+#### Baseline models
 
-Possible subgroups are:
-- for gDRO and resampling: `['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']`
-- for DomainInd: `['A','A_4','S','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
-- for CFair: `['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
+To reproduce all the experiments in the paper, we provide example training scripts for training a baseline model with ERM for the four datasets with our hyperparameters. The arguments `[wandb_name]`, `[data_folder]`, and `[random_seed]` should be changed accordingly.
 
 ```python
 # MNIST
@@ -80,6 +77,15 @@ python main.py --experiment baseline --backbone cusResNet50 --wandb_name [wandb_
 python main.py --experiment baseline --backbone cusBERTClassifier --is_text True --optimizer AdamW --wandb_name [wandb_name] --early_stopping 5 --dataset_name CIVILCOMMENTS --data_folder [data_folder] --pretrained True --total_epochs 10 --batch_size 32 --lr 0.00005 --output_dim 1 --num_classes 1
 
 ```
+
+#### Bias mitigation
+
+To train the bias mitigation methods change `--experiment` to `[GroupDRO, resampling, DomainInd, CFair]` and specify the subgroup for mitigation using `[sensitive_name]` and `[sens_classes]` (the number of different subgroups for a given subgrouping). 
+
+Possible subgroups are:
+- for gDRO and resampling: `['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']`
+- for DomainInd: `['A','A_4','S','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
+- for CFair: `['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
 
 ### Process results
 
