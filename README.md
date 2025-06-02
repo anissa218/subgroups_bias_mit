@@ -65,7 +65,7 @@ To reproduce all the experiments in the paper, we provide example training scrip
 
 ```python
 # MNIST
-python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --dataset_name MNIST --data_folder [data_folder] --groupdro_adj 1 --early_stopping 50 --is_small True --total_epochs 50 --batch_size 128 --lr 0.001
+python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --dataset_name MNIST --data_folder [data_folder] --early_stopping 50 --is_small True --total_epochs 50 --batch_size 128 --lr 0.001
 
 # CXP
 python main.py --experiment baseline --backbone cusDenseNet121 --wandb_name [wandb_name] --dataset_name CXP --data_folder [data_folder] --early_stopping 10 --early_stopping 10 --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005
@@ -74,7 +74,7 @@ python main.py --experiment baseline --backbone cusDenseNet121 --wandb_name [wan
 python main.py --experiment baseline --backbone cusResNet50 --wandb_name [wandb_name] --dataset_name CELEBA --data_folder [data_folder] --early_stopping 5 --pretrained True --total_epochs 10 --batch_size 256 --lr 0.001
 
 # Civil_comments
-python main.py --experiment baseline --backbone cusBERTClassifier --wandb_name [wandb_name] --dataset_name CIVILCOMMENTS --data_folder [data_folder] --is_text True --optimizer AdamW --early_stopping 5 --pretrained True --total_epochs 10 --batch_size 32 --lr 0.00005
+python main.py --experiment baseline --backbone cusBERTClassifier --wandb_name [wandb_name] --dataset_name CIVILCOMMENTS --data_folder [data_folder] --early_stopping 5 --pretrained True --is_text True --optimizer AdamW --total_epochs 10 --batch_size 32 --lr 0.00005
 
 ```
 
