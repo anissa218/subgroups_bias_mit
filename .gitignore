@@ -171,8 +171,10 @@ processed_results/*
 bash_scripts/
 your_path/
 wandb/
+loo_experiments/
 
 # personal results files
 *.pkl
 *.csv
 *.out
+

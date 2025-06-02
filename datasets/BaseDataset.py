@@ -3,11 +3,10 @@ import numpy as np
 
 
 class BaseDataset(torch.utils.data.Dataset):
-    def __init__(self, dataframe, path_to_images, sens_name, sens_classes, transform):
+    def __init__(self, dataframe, path_to_images, sens_name, sens_classes, transform, subsample_what=None):
         super(BaseDataset, self).__init__()
         
         self.dataframe = dataframe        
-        self.dataset_size = self.dataframe.shape[0]
         self.transform = transform
         self.path_to_images = path_to_images
         self.sens_name = sens_name
@@ -16,6 +15,14 @@ class BaseDataset(torch.utils.data.Dataset):
         self.A = None
         self.Y = None
         self.AY_proportion = None
+
+        if subsample_what is not None:
+            print("doing subsampling")
+            self._subsample(subsample_what)
+        else:
+            self.subsampled_idxs = self.dataframe.index.tolist()
+        
+        self.dataset_size = self.dataframe.shape[0]
         
     def get_AY_proportions(self):
         if self.AY_proportion:
@@ -263,3 +270,19 @@ class BaseDataset(torch.utils.data.Dataset):
         # else:
         #     raise ValueError('Please check the sensitive attributes.')
         return sensitive
+    
+        
+    def _subsample(self, subsample_what="group"):
+        
+        sens_attr, group_num = self.group_counts('group') #sens_attr is array of sens_attr membership for each sample
+
+        min_size = min(group_num)
+        selected_idxs = []
+
+        initial_size = self.dataframe.shape[0]
+        subsampled_dataframe = self.dataframe.groupby(self.sens_name).sample(n=int(min_size.item()),random_state=42)
+        self.subsampled_idxs = subsampled_dataframe.index.tolist()
+        self.dataframe = subsampled_dataframe.reset_index(drop=True)
+
+        final_size = self.dataframe.shape[0]
+        print(f"Subsampled {initial_size} to {final_size}")

@@ -14,4 +14,6 @@ from datasets.MIMIC_CXR import MIMIC_CXR
 from datasets.UKBB_RET import UKBB_RET
 from datasets.UKBB_RET_REG import UKBB_RET_REG
 from datasets.MNIST import MNIST
+from datasets.CELEBA import CELEBA
+from datasets.CIVILCOMMENTS import CIVILCOMMENTS
 

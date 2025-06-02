@@ -36,6 +36,8 @@ class CFairNet(nn.Module):
             hidden_size = 1568 # need to set this manually as simpleCNN does not have .body attribute
         elif backbone == 'cusDenseNet121':
             hidden_size = self.net.hidden_size
+        elif backbone == 'cusBERTClassifier':
+            hidden_size = self.net.hidden_size
         else:
             hidden_size = self.net.body.fc.in_features
         # Parameter of the conditional adversary classification layer.

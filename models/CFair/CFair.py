@@ -60,7 +60,18 @@ class CFair(BaseNet):
         auc = 0.
         no_iter = 0
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+            
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(self.device)
+                attention_mask = attention_mask.to(self.device)
+                targets = targets.to(self.device)
+                sensitive_attr = sensitive_attr.to(self.device)
+
+                images = (input_ids, attention_mask)
+            else:
+                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+            
             self.optimizer.zero_grad()
             ypreds, apreds = self.network.forward(images, targets)
             

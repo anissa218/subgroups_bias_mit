@@ -7,11 +7,13 @@ from datasets.BaseDataset import BaseDataset
 
 
 class CXP(BaseDataset):
-    def __init__(self, dataframe, path_to_pickles, sens_name, sens_classes, transform):
-        super(CXP, self).__init__(dataframe, path_to_pickles, sens_name, sens_classes, transform)
+    def __init__(self, dataframe, path_to_pickles, sens_name, sens_classes, transform,subsample_what=None):
+        super(CXP, self).__init__(dataframe, path_to_pickles, sens_name, sens_classes, transform,subsample_what)
         
         with open(path_to_pickles, 'rb') as f: 
-            self.tol_images = pickle.load(f)
+            self.all_images = pickle.load(f)
+            
+        self.tol_images = [self.all_images[i] for i in self.subsampled_idxs] # in case of downsampling
         
         self.A = self.set_A(sens_name)
         self.Y = (np.asarray(self.dataframe['binary_label'].values) > 0).astype('float')

@@ -6,8 +6,8 @@ from datasets.BaseDataset import BaseDataset
 import cv2
 
 class MNIST(BaseDataset):
-    def __init__(self, dataframe, path_to_pickles, sens_name, sens_classes, transform,use_pkl=True):
-        super(MNIST, self).__init__(dataframe, path_to_pickles, sens_name, sens_classes, transform)
+    def __init__(self, dataframe, path_to_pickles, sens_name, sens_classes, transform,use_pkl=True,subsample_what=None):
+        super(MNIST, self).__init__(dataframe, path_to_pickles, sens_name, sens_classes, transform,subsample_what)
 
         """
             Dataset class for MNIST images.
@@ -23,7 +23,11 @@ class MNIST(BaseDataset):
             index, image, label, and sensitive attribute.
         """
 
-        self.tol_images = torch.load(path_to_pickles).numpy()
+        self.all_images= torch.load(path_to_pickles).numpy()
+        self.tol_images = [self.all_images[i] for i in self.subsampled_idxs] # in case of downsampling
+
+        # self.tol_images = torch.load(path_to_pickles).numpy()
+
         #print(self.tol_images.shape)
         self.A = self.set_A(sens_name)
         self.Y = (np.asarray(self.dataframe['binaryLabel'].values)).astype('float')

@@ -94,7 +94,9 @@ def preprocess_mnist_data(path_to_preds,path_to_splits,threshold_function = find
     pred_df = pd.read_csv(path_to_preds)
     pred_df = pred_df.set_index('index')
     metadata_df = pd.read_csv(path_to_splits)
-    metadata_df['binary_label'] = metadata_df['binaryLabel'].astype(float)
+    
+    if 'binaryLabel' in metadata_df.columns:
+        metadata_df['binary_label'] = metadata_df['binaryLabel'].astype(float)
 
     # add predictions from pred file
     metadata_df['pred'] = pred_df['pred']
@@ -377,16 +379,23 @@ def make_results_df(train_preds,val_preds,subgroups,calculate_auc=True):
         train_acc,val_acc,train_precision,val_precision,train_recall,val_recall,train_tnr,val_tnr=get_overall_metrics(train_preds,val_preds) # overall metrics, independent of subgroup
         train_acc,val_acc,train_precision,val_precision,train_recall,val_recall,train_tnr,val_tnr = train_acc[-5],val_acc[-5],train_precision[-5],val_precision[-5],train_recall[-5],val_recall[-5],train_tnr[-5],val_tnr[-5]  # only get last epoch
         if calculate_auc:
-            train_auc_list = get_subgroup_auc(train_preds,subgroup)
-            val_auc_list = get_subgroup_auc(val_preds,subgroup)
+            try:
+                train_auc_list = get_subgroup_auc(train_preds,subgroup)
+                val_auc_list = get_subgroup_auc(val_preds,subgroup)
 
-            train_auc,val_auc = train_auc_list[-5],val_auc_list[-5]
-            gap_train_auc,gap_val_auc = train_auc.max()-train_auc.min(),val_auc.max()-val_auc.min()
-            min_train_auc,min_val_auc = train_auc.min(),val_auc.min()
+                train_auc,val_auc = train_auc_list[-5],val_auc_list[-5]
+                gap_train_auc,gap_val_auc = train_auc.max()-train_auc.min(),val_auc.max()-val_auc.min()
+                min_train_auc,min_val_auc = train_auc.min(),val_auc.min()
+
+            except ValueError:
+                print('not calculating subgroup AUC bc only one class')
+                gap_train_auc, gap_val_auc = 0,0
+                min_train_auc,min_val_auc = 0,0
+
 
             overall_train_auc,overall_val_auc = get_overall_auc(train_preds,val_preds)
             overall_train_auc,overall_val_auc = overall_train_auc[-5],overall_val_auc[-5]
-            
+        
 
             #model_results_df = model_results_df.append({'Subgroup':subgroup,'Train Acc':train_acc,'Train Acc Gap':gap_train_acc,'Val Acc':val_acc,'Val Acc Gap':gap_val_acc,'Train Precision':train_precision,'Train Precision Gap':gap_train_precision,'Val Precision':val_precision,'Val Precision Gap':gap_val_precision,'Train Recall':train_recall,'Train Recall Gap':gap_train_recall,'Val Recall':val_recall,'Val Recall Gap':gap_val_recall}, ignore_index = True) #'Train AUC':train_auc, 'Train AUC Gap': gap_train_auc, 'Val AUC': val_auc, 'Val AUC Gap': gap_val_auc},ignore_index=True)
         
@@ -475,11 +484,23 @@ def make_test_results_df(train_preds,subgroups,calculate_auc=True):
         train_acc,val_acc,train_precision,val_precision,train_recall,val_recall,train_tnr,val_tnr = train_acc[-1],val_acc[-1],train_precision[-1],val_precision[-1],train_recall[-1],val_recall[-1],train_tnr[-1],val_tnr[-1] # only get last epoch
 
         if calculate_auc:
-            train_auc = get_subgroup_auc(train_preds,subgroup)[-1]
-            gap_train_auc = train_auc.max()-train_auc.min()
-            min_auc = train_auc.min()
-            train_auc,val_auc = get_overall_auc(train_preds,train_preds)
-            train_auc = train_auc[-1]
+            try:
+                train_auc = get_subgroup_auc(train_preds,subgroup)[-1]
+                gap_train_auc = train_auc.max()-train_auc.min()
+                min_auc = train_auc.min()
+
+            except ValueError:
+                print('not calculating subgroup AUC bc only one class')
+                gap_train_auc = 0
+                min_auc = 0
+            
+            try:
+                train_auc,val_auc = get_overall_auc(train_preds,train_preds)
+                train_auc = train_auc[-1]
+            except ValueError:
+                print('not calculating overall AUC bc only one class')
+                train_auc = 0
+
             new_row = pd.DataFrame({'Subgroup': [subgroup],
                             'Test Acc': [train_acc],
                             'Test Acc Gap': [gap_train_acc],

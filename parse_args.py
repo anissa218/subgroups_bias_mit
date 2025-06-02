@@ -44,7 +44,8 @@ def collect_args(args=None):
                             'BayesCNN',
                             'resamplingSWAD',
                             'Regression',
-                            'baseline_simple'
+                            'baseline_simple',
+                            'subsampling'
                         ],
                         default = 'baseline')
 
@@ -53,7 +54,7 @@ def collect_args(args=None):
     parser.add_argument('--if_wandb', type=bool, default=True)
     parser.add_argument('--dataset_name', default='CXP', choices=['CXP', 'NIH', 'MIMIC_CXR', 'RadFusion', 'RadFusion4', 
     'HAM10000', 'HAM100004', 'Fitz17k', 'OCT', 'PAPILA', 'ADNI', 'ADNI3T', 'COVID_CT_MD','RadFusion_EHR',
-    'MIMIC_III', 'eICU','UKBB_RET','UKBB_RET_REG','MNIST'])
+    'MIMIC_III', 'eICU','UKBB_RET','UKBB_RET_REG','MNIST','CELEBA','CIVILCOMMENTS'])
 
     # class name - just for UKBB
     parser.add_argument('--class_name', default='', choices=['sex', 'bmi', 'ckd', 'bp','adj_bp','diab'])
@@ -63,9 +64,10 @@ def collect_args(args=None):
     parser.add_argument('--is_small', type=str2bool, nargs='?',const=False, default=False,help='if using dataset with small image size')   
     parser.add_argument('--resume_path', type = str, default='', help = 'explicitly indentify checkpoint path to resume.')
     
-    parser.add_argument('--sensitive_name', default='Sex', choices=['Sex', 'Age', 'Race', 'skin_type', 'Insurance', 'Ethnicity','Centre', 'Random','noisy_001','noisy_005','noisy_010','noisy_025','noisy_050','Age_multi8','Random','Y','Majority','Imperfect','Age_multi4','Imperfect_paper','AY','SY','Artefact','AY_8','SY_8','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','YAS','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050','noisy_S_001','noisy_S_005','noisy_S_010','noisy_S_025','noisy_S_050','A_4','S_4','AS'])
+    parser.add_argument('--sensitive_name', default='Sex', choices=['Sex', 'Age', 'Race', 'skin_type', 'Insurance', 'Ethnicity','Centre', 'Random','noisy_001','noisy_005','noisy_010','noisy_025','noisy_050','Age_multi8','Random','Y','Majority','Imperfect','Age_multi4','Imperfect_paper','AY','SY','Artefact','AY_8','SY_8','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','YAS','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050','noisy_S_001','noisy_S_005','noisy_S_010','noisy_S_025','noisy_S_050','A_4','S_4','AS','A','S','AY_granular','SY_granular'])
     parser.add_argument('--is_3d', type=bool, default=False)
     parser.add_argument('--is_tabular', type=bool, default=False)
+    parser.add_argument('--is_text', type=bool, default=False)
     
     parser.add_argument('--adjust_size', type=str2bool, nargs='?',
                         const=False, default=False,
@@ -92,7 +94,7 @@ def collect_args(args=None):
                         const=True, default=True,
                         help='if using data augmentation') # anissa changes
     parser.add_argument('--pos_weight', type=float, default=1.0, help = 'weight for positive class in loss function')    
-    parser.add_argument('--optimizer', type=str, default='Adam', choices=['Adam', 'SGD'], help='optimizer for training')
+    parser.add_argument('--optimizer', type=str, default='Adam', choices=['Adam', 'AdamW', 'SGD'], help='optimizer for training')
     # testing
     parser.add_argument('--hash_id', type=str, default = '')
     
@@ -102,14 +104,14 @@ def collect_args(args=None):
     
     # cross-domain
     parser.add_argument('--cross_testing', action='store_true')
-    parser.add_argument('--source_domain', default='', choices=['CXP', 'MIMIC_CXR', 'ADNI', 'ADNI3T','UKBB_RET','UKBB_RET_REG'])
-    parser.add_argument('--target_domain', default='', choices=['CXP', 'MIMIC_CXR', 'ADNI', 'ADNI3T','UKBB_RET','UKBB_RET_REG'])
+    parser.add_argument('--source_domain', default='', choices=['CXP', 'MIMIC_CXR', 'ADNI', 'ADNI3T','UKBB_RET','UKBB_RET_REG', 'MNIST'])
+    parser.add_argument('--target_domain', default='', choices=['CXP', 'MIMIC_CXR', 'ADNI', 'ADNI3T','UKBB_RET','UKBB_RET_REG','MNIST'])
     parser.add_argument('--cross_testing_model_path', type=str, default='', help='path of the models of three random seeds')
     parser.add_argument('--cross_testing_model_path_single', type=str, default='', help='path of the models')
     
     # network
     parser.add_argument('--backbone', default = 'cusResNet18', choices=['cusResNet18', 'cusResNet50','cusDenseNet121',
-                                                                        'cusResNet18_3d', 'cusResNet50_3d', 'cusMLP','SimpleCNN','InceptionV3','ImprovedCNN'])
+                                                                        'cusResNet18_3d', 'cusResNet50_3d', 'cusMLP','SimpleCNN','InceptionV3','ImprovedCNN','cusBERTClassifier'])
     #parser.add_argument('--pretrained', type=bool, default=True, help = 'if use pretrained ResNet backbone') 
     parser.add_argument("--pretrained", type=str2bool, nargs='?',
                         const=True, default=True,
@@ -209,7 +211,7 @@ def create_exerpiment_setting(opt, do_wandb=True):
     basics.creat_folder(opt['save_folder'])
     
     optimizer_setting = {
-        'optimizer': torch.optim.SGD if opt['optimizer'] == 'SGD' else torch.optim.Adam,
+        'optimizer': torch.optim.SGD if opt['optimizer'] == 'SGD' else torch.optim.AdamW if opt['optimizer'] == 'AdamW' else torch.optim.Adam,
         'lr': opt['lr'],
         'weight_decay': opt['weight_decay'],
     }

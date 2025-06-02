@@ -49,16 +49,21 @@ def get_dataset(opt):
     elif opt['is_tabular']:
         pass
 
+    elif opt['is_text']:
+        transform_train = None
+        transform_test = None # can add augmentations later
+
     elif opt['is_small']:
         print('is small')
         if data_setting['augment']:
+            print('doing augmentations')
             transform_train = transforms.Compose([
                 #transforms.Resize(28),
-                transforms.ToTensor(), # tried putting ToTEnsor first
+                transforms.ToTensor(),
                 transforms.RandomHorizontalFlip(),
-				transforms.RandomVerticalFlip(), #anissa
+				transforms.RandomVerticalFlip(),
 				transforms.RandomRotation((-15, 15)),
-                #transforms.RandomCrop((28, 28)), # effectively no random cropping
+                #transforms.RandomCrop((28, 28)),
                 #transforms.ColorJitter(0.3,0.3,0.3), # brightness saturation, contrast
                 transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 2)),
                 transforms.Normalize(mean=[0.45],std=[0.225]),
@@ -83,14 +88,14 @@ def get_dataset(opt):
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomRotation((-15, 15)),
                     transforms.RandomAffine(
-                        degrees=0,  # No rotation here (already handled by RandomRotation)
-                        translate=(0.05, 0.05),  # Allow up to 5% shifting in both x and y
-                        scale=(0.9, 1.1),  # Scale within 90% to 110%
-                        interpolation=transforms.InterpolationMode.BILINEAR,  # Smoother interpolation
+                        degrees=0,
+                        translate=(0.05, 0.05),
+                        scale=(0.9, 1.1),
+                        interpolation=transforms.InterpolationMode.BILINEAR,
                         fill=0  # Padding with black (assuming X-ray background)
                     ),
                     transforms.RandomCrop((224, 224)),
-                    transforms.ColorJitter(0.3,0.3,0.3), # brightness saturation, contrast
+                    transforms.ColorJitter(0.3,0.3,0.3),
                     transforms.ToTensor(),
                     normalize,
                 ])
@@ -101,7 +106,7 @@ def get_dataset(opt):
                     transforms.RandomVerticalFlip(), 
                     transforms.RandomRotation((-15, 15)),
                     transforms.RandomCrop((224, 224)),
-                    transforms.ColorJitter(0.3,0.3,0.3), # brightness saturation, contrast
+                    transforms.ColorJitter(0.3,0.3,0.3),
                     transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 2)),
                     transforms.ToTensor(),
                     normalize,
@@ -133,13 +138,13 @@ def get_dataset(opt):
 
     ### LOAD CSVs ###
 
-    if opt['dataset_name'] == 'UKBB_RET' or opt['dataset_name'] == 'MNIST' or opt['dataset_name'] == 'CXP': # account for having differnet csvs (different binary labels) depending on what prediction task you are doing
+    if opt['dataset_name'] == 'UKBB_RET' or opt['dataset_name'] == 'MNIST' or opt['dataset_name'] == 'CXP' or opt['dataset_name'] == 'CELEBA' or opt['dataset_name'] == 'CIVILCOMMENTS': # account for having differnet csvs (different binary labels) depending on what prediction task you are doing
         
         class_name = opt['class_name']
-        if class_name: # empty strings are evaluated to falsy
-            class_name = '_' + class_name # this means that for MNIST dataset it still works if class_name is empty
+        if class_name:
+            class_name = '_' + class_name
         root_path = data_setting['root_path']
-        data_folder = opt['data_folder'] # to implement!
+        data_folder = opt['data_folder']
 
         train_meta = pd.read_csv(os.path.join(root_path,data_folder,data_setting['train' + class_name+ '_meta_path'])) 
         val_meta = pd.read_csv(os.path.join(root_path,data_folder,data_setting['val' + class_name+ '_meta_path'])) 
@@ -169,7 +174,6 @@ def get_dataset(opt):
         test_data = dataset_name(test_meta, image_path, opt['sensitive_name'], opt['sens_classes'], transform_test)
 
     elif opt['is_tabular']:
-        # different format
         dataset_name = getattr(datasets, opt['dataset_name'])
         data_train_path = data_setting['data_train_path']
         data_val_path = data_setting['data_val_path']
@@ -185,7 +189,7 @@ def get_dataset(opt):
     
     else:
         dataset_name = getattr(datasets, opt['dataset_name'])
-        if  opt['dataset_name'] == 'UKBB_RET' or opt['dataset_name'] == 'MNIST' or opt['dataset_name'] == 'CXP': # get specific images for the desired data_folder
+        if  opt['dataset_name'] == 'UKBB_RET' or opt['dataset_name'] == 'MNIST' or opt['dataset_name'] == 'CXP' or opt['dataset_name'] == 'CELEBA' or opt['dataset_name'] == 'CIVILCOMMENTS': # get specific images for the desired data_folder
             pickle_train_path = os.path.join(root_path,data_folder,data_setting['pickle_train_path'])
             pickle_val_path = os.path.join(root_path,data_folder,data_setting['pickle_val_path'])
             pickle_test_path = os.path.join(root_path,data_folder,data_setting['pickle_test_path'])
@@ -209,6 +213,11 @@ def get_dataset(opt):
             train_data = dataset_name(train_meta, pickle_train_path, opt['sensitive_name'], opt['train_sens_classes'], transform_train,use_pkl=False)
             val_data = dataset_name(val_meta, pickle_val_path, opt['sensitive_name'], opt['sens_classes'], transform_test,use_pkl=False)
             test_data = dataset_name(test_meta, pickle_test_path, opt['sensitive_name'], opt['sens_classes'], transform_test,use_pkl=False)
+        elif opt['experiment'] == 'subsampling':
+            train_data = dataset_name(train_meta, pickle_train_path, opt['sensitive_name'], opt['train_sens_classes'], transform_train,subsample_what='group')
+            val_data = dataset_name(val_meta, pickle_val_path, opt['sensitive_name'], opt['sens_classes'], transform_test, subsample_what='group')
+            test_data = dataset_name(test_meta, pickle_test_path, opt['sensitive_name'], opt['sens_classes'], transform_test, subsample_what=None) # no subsampling on test images!!    
+        
         else:
             train_data = dataset_name(train_meta, pickle_train_path, opt['sensitive_name'], opt['train_sens_classes'], transform_train)
             val_data = dataset_name(val_meta, pickle_val_path, opt['sensitive_name'], opt['sens_classes'], transform_test)
@@ -216,10 +225,11 @@ def get_dataset(opt):
     
     print('loaded dataset ', opt['dataset_name'])
         
-    if opt['experiment']=='resampling' or opt['experiment']=='resamplingSWAD': # or opt['experiment']=='GroupDRO' 
+    if opt['experiment']=='resampling' or opt['experiment']=='resamplingSWAD':
         weights = train_data.get_weights(resample_which = opt['resample_which'])
         sampler = WeightedRandomSampler(weights, len(weights), replacement=True, generator = g)
         print('Doing resampling. Weights are: ', list(set(weights)))
+
     else:
         sampler = None
 
@@ -227,8 +237,7 @@ def get_dataset(opt):
                             train_data, batch_size=opt['batch_size'], 
                             sampler=sampler,
                             shuffle=(opt['experiment']!='resampling' and opt['experiment']!='resamplingSWAD'), num_workers=8, 
-                            worker_init_fn=seed_worker, generator=g, pin_memory=True) # for shuffle - and opt['experiment']!='GroupDRO'
-    print('loaded train_loader') 
+                            worker_init_fn=seed_worker, generator=g, pin_memory=True)
     val_loader = torch.utils.data.DataLoader(
                           val_data, batch_size=opt['batch_size'],
                           shuffle=True, num_workers=8, worker_init_fn=seed_worker, generator=g, pin_memory=True)

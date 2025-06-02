@@ -117,3 +117,60 @@ def make_subset_images(images_df,images_tensor,fg_colour_channel_col='Sex_binary
         rgb_image = add_colour_fg_bg(images_tensor[index],fg_colour_channel,bg_colour_channel,noise)
         subset_images[i] = rgb_image
     return subset_images
+
+def load_civilcomments_df(root):
+    """
+    Loads the data and removes all examples where we don't have identity annotations.
+    """
+    df = pd.read_csv(os.path.join(root, 'all_data.csv'))
+    df = df.loc[(df['identity_annotator_count'] > 0), :]
+    df = df.reset_index(drop=True)
+    return df
+
+def augment_civilcomments_df(df):
+    """
+    Augment the dataframe with auxiliary attributes.
+    First, we create aggregate attributes, like `LGBTQ` or `other_religions`.
+    These are aggregated because there would otherwise not be enough examples to accurately
+    estimate their accuracy.
+
+    Next, for each category of demographics (e.g., race, gender), we construct an auxiliary
+    attribute (e.g., `na_race`, `na_gender`) that is 1 if the comment has no identities related to
+    that demographic, and is 0 otherwise.
+    Note that we can't just create a single multi-valued attribute like `gender` because there's
+    substantial overlap: for example, 4.6% of comments mention both male and female identities.
+    """
+    df = df.copy()
+    for aggregate_attr in AGGREGATE_ATTRS:
+        aggregate_mask = pd.Series([False] * len(df))
+        for attr in AGGREGATE_ATTRS[aggregate_attr]:
+            attr_mask = (df[attr] >= 0.5)
+            aggregate_mask = aggregate_mask | attr_mask
+        df[aggregate_attr] = 0
+        df.loc[aggregate_mask, aggregate_attr] = 1
+
+    attr_count = np.zeros(len(df))
+    for attr in ORIG_ATTRS:
+        attr_mask = (df[attr] >= 0.5)
+        attr_count += attr_mask
+    df['num_identities'] = attr_count
+    df['more_than_one_identity'] = (attr_count > 1)
+
+    for group in GROUP_ATTRS:
+        print(f'## {group}')
+        counts = {}
+        na_mask = np.ones(len(df))
+        for attr in GROUP_ATTRS[group]:
+            attr_mask = (df[attr] >= 0.5)
+            na_mask = na_mask & ~attr_mask
+            counts[attr] = np.mean(attr_mask)
+        counts['n/a'] = np.mean(na_mask)
+
+        col_name = f'{group}_any'
+        df[col_name] = 1
+        df.loc[na_mask, col_name] = 0 # swaped these around!
+
+        for k, v in counts.items():
+            print(f'{k:40s}: {v:.4f}')
+        print()
+    return df

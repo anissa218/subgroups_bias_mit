@@ -12,7 +12,6 @@ def find_threshold(tol_output, tol_target):
     Adapted previous find threshold function so that it takes into account TNR in addition to precision and recall rate
     '''
 
-
     PRED_LABEL = ['disease']
 
     # create empty dfs
@@ -56,10 +55,12 @@ def find_threshold(tol_output, tol_target):
 
         bestthr = t[np.where(score == max(score))]
         thrs.append(bestthr)
-        
-        thisrow['bestthr'] = bestthr[0]
-
-    return bestthr[0]
+        if len(bestthr) == 0:
+            print('returning default threshold value of 0.5')
+            return 0.5
+        else:
+            thisrow['bestthr'] = bestthr[0]
+            return bestthr[0]
 
 def calculate_auc(prediction, labels):
     # does prediction contain a nan?
@@ -496,6 +497,7 @@ def calculate_metrics(tol_output, tol_target, tol_sensitive, tol_index, sens_cla
 
     correct = 0
     theshold = find_threshold(tol_output, tol_target)
+    tol_output = np.array(tol_output)
     tol_predicted = (tol_output > theshold).astype('float')
     correct += (tol_predicted == tol_target).sum()
     
@@ -511,64 +513,66 @@ def calculate_metrics(tol_output, tol_target, tol_sensitive, tol_index, sens_cla
     tol_predicted, tol_output, tol_target, tol_sensitive = np.asarray(tol_predicted), np.asarray(tol_output), \
     np.asarray(tol_target).squeeze(), np.asarray(tol_sensitive)
     
-    if sens_classes == 2:
-        sens_idx = tol_sensitive == 0
-        target_idx = tol_target == 0
+    # if sens_classes == 2:
+    #     sens_idx = tol_sensitive == 0
+    #     target_idx = tol_target == 0
         
-        cls_error, error_0, error_1 = conditional_errors_binary(tol_predicted, tol_target, tol_sensitive)
-        auc0, auc1 = conditional_AUC_binary(tol_output, tol_target, tol_sensitive)
-        pred_0, pred_1 = np.mean(tol_predicted[sens_idx]), np.mean(tol_predicted[~sens_idx])
+    #     cls_error, error_0, error_1 = conditional_errors_binary(tol_predicted, tol_target, tol_sensitive)
+    #     auc0, auc1 = conditional_AUC_binary(tol_output, tol_target, tol_sensitive)
+    #     pred_0, pred_1 = np.mean(tol_predicted[sens_idx]), np.mean(tol_predicted[~sens_idx])
 
-        cond_00 = np.mean((tol_predicted[np.logical_and(sens_idx, target_idx)]))
-        cond_10 = np.mean((tol_predicted[np.logical_and(~sens_idx, target_idx)]))
-        cond_01 = np.mean((tol_predicted[np.logical_and(sens_idx, ~target_idx)]))
-        cond_11 = np.mean((tol_predicted[np.logical_and(~sens_idx, ~target_idx)]))
+    #     cond_00 = np.mean((tol_predicted[np.logical_and(sens_idx, target_idx)]))
+    #     cond_10 = np.mean((tol_predicted[np.logical_and(~sens_idx, target_idx)]))
+    #     cond_01 = np.mean((tol_predicted[np.logical_and(sens_idx, ~target_idx)]))
+    #     cond_11 = np.mean((tol_predicted[np.logical_and(~sens_idx, ~target_idx)]))
         
-        eqodd_threh = cal_eqodd(tol_output, tol_target, tol_sensitive, threshold = 0.5)
-        eqodd_at_specif = eqodd_at_specificity(tol_output, tol_target, tol_sensitive, specificity = 0.8)
-        eqodd_at_sensit = eqodd_at_sensitivity(tol_output, tol_target, tol_sensitive, sensitivity = 0.8)
+    #     eqodd_threh = cal_eqodd(tol_output, tol_target, tol_sensitive, threshold = 0.5)
+    #     eqodd_at_specif = eqodd_at_specificity(tol_output, tol_target, tol_sensitive, specificity = 0.8)
+    #     eqodd_at_sensit = eqodd_at_sensitivity(tol_output, tol_target, tol_sensitive, sensitivity = 0.8)
         
-        log_dict = {"Overall AUC": auc,
-                 "auc-group_0": auc0,
-                 "auc-group_1": auc1,
-                 "Overall Acc": (1-cls_error),
-                 "acc-group_0": (1 - error_0),
-                 "acc-group_1": (1 - error_1),
-                 "DP": (1 - np.abs(pred_0 - pred_1)),
-                 "EqOpp1": (1 - np.abs(cond_00 - cond_10)),
-                 "EqOpp0": (1 - np.abs(cond_01 - cond_11)),
-                 "EqOdd": (1 - 0.5 * (np.abs(cond_00 - cond_10) + np.abs(cond_01 - cond_11))),
-                 "EqOdd_0.5": eqodd_threh,
-                 "EqOdd_specificity_0.8": eqodd_at_specif,
-                 "EqOdd_sensitivity_0.8": eqodd_at_sensit,
-                   }
+    #     log_dict = {"Overall AUC": auc,
+    #              "auc-group_0": auc0,
+    #              "auc-group_1": auc1,
+    #              "Overall Acc": (1-cls_error),
+    #              "acc-group_0": (1 - error_0),
+    #              "acc-group_1": (1 - error_1),
+    #              "DP": (1 - np.abs(pred_0 - pred_1)),
+    #              "EqOpp1": (1 - np.abs(cond_00 - cond_10)),
+    #              "EqOpp0": (1 - np.abs(cond_01 - cond_11)),
+    #              "EqOdd": (1 - 0.5 * (np.abs(cond_00 - cond_10) + np.abs(cond_01 - cond_11))),
+    #              "EqOdd_0.5": eqodd_threh,
+    #              "EqOdd_specificity_0.8": eqodd_at_specif,
+    #              "EqOdd_sensitivity_0.8": eqodd_at_sensit,
+    #                }
         
-    else:
-        cls_error, errors = conditional_errors_multi(tol_predicted, tol_target, tol_sensitive, sens_classes)
-        aucs = conditional_AUC_multi(tol_output, tol_target, tol_sensitive, sens_classes)
+    # else:
+    #     cls_error, errors = conditional_errors_multi(tol_predicted, tol_target, tol_sensitive, sens_classes)
+    #     aucs = conditional_AUC_multi(tol_output, tol_target, tol_sensitive, sens_classes)
         
-        log_dict = {"Overall AUC": auc,   
-                 "Overall Acc": (1-cls_error),
+    #     log_dict = {"Overall AUC": auc,   
+    #              "Overall Acc": (1-cls_error),
+    #             }
+    #     for i, (error, auc) in enumerate(zip(errors, aucs)):
+    #         log_dict['acc-group_' + str(i)] = 1 - error
+    #         log_dict['auc-group_' + str(i)] = auc
+    
+    # log_dict['Overall ECE'] = expected_calibration_error(tol_output, tol_target)
+    # log_dict['Overall BCE'] = bce_loss(tol_output, tol_target)
+    
+    # tpr_at_tnrs, fnrs, fprs, recalls, specificitys, eces, bces = fnr_fpr_spe_sens_groups(tol_output, tol_target, tol_sensitive, sens_classes, specificity_val = 0.8, threshold = 0.5)
+    # for i, (tpr_at_tnr, fnr, fpr, recall, specificity, ece, bce) in enumerate(zip(tpr_at_tnrs, fnrs, fprs, recalls, specificitys, eces, bces)):
+    #     log_dict['tpr_at_tnr_' + str(i)] = tpr_at_tnr
+    #     log_dict['fnr_at_thres-group_' + str(i)] = fnr
+    #     log_dict['fpr_at_thres-group_' + str(i)] = fpr
+    #     log_dict['recall_at_thres-group_' + str(i)] = recall
+    #     log_dict['specificity_at_thres-group_' + str(i)] = specificity
+    #     log_dict['ECE-group_' + str(i)] = ece
+    #     log_dict['BCE-group_' + str(i)] = bce
+
+    # log_dict = get_worst_auc(log_dict)
+    log_dict = {"Overall AUC": auc,   
+                 "Overall Acc": acc,
                 }
-        for i, (error, auc) in enumerate(zip(errors, aucs)):
-            log_dict['acc-group_' + str(i)] = 1 - error
-            log_dict['auc-group_' + str(i)] = auc
-    
-    log_dict['Overall ECE'] = expected_calibration_error(tol_output, tol_target)
-    log_dict['Overall BCE'] = bce_loss(tol_output, tol_target)
-    
-    tpr_at_tnrs, fnrs, fprs, recalls, specificitys, eces, bces = fnr_fpr_spe_sens_groups(tol_output, tol_target, tol_sensitive, sens_classes, specificity_val = 0.8, threshold = 0.5)
-    for i, (tpr_at_tnr, fnr, fpr, recall, specificity, ece, bce) in enumerate(zip(tpr_at_tnrs, fnrs, fprs, recalls, specificitys, eces, bces)):
-        log_dict['tpr_at_tnr_' + str(i)] = tpr_at_tnr
-        log_dict['fnr_at_thres-group_' + str(i)] = fnr
-        log_dict['fpr_at_thres-group_' + str(i)] = fpr
-        log_dict['recall_at_thres-group_' + str(i)] = recall
-        log_dict['specificity_at_thres-group_' + str(i)] = specificity
-        log_dict['ECE-group_' + str(i)] = ece
-        log_dict['BCE-group_' + str(i)] = bce
-
-    log_dict = get_worst_auc(log_dict)
-    # log_dict = {}
     return log_dict, tol_predicted, pred_df
 
 def get_pred_df(tol_output, tol_target, tol_sensitive, tol_index):

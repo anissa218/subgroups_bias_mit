@@ -43,8 +43,17 @@ class DomainInd(baseline):
         train_loss, auc, no_iter = 0, 0., 0
         
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
-                    self.device)
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(self.device)
+                attention_mask = attention_mask.to(self.device)
+                targets = targets.to(self.device)
+                sensitive_attr = sensitive_attr.to(self.device)
+
+                images = (input_ids, attention_mask)
+            else:
+                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+
             self.optimizer.zero_grad()
             outputs, _ = self.network.forward(images)
     
@@ -80,8 +89,17 @@ class DomainInd(baseline):
         no_iter = 0
         with torch.no_grad():
             for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
-                    self.device)
+                if isinstance(images, list): # for text models
+                    input_ids, attention_mask = images[0],images[1]
+                    input_ids = input_ids.to(self.device)
+                    attention_mask = attention_mask.to(self.device)
+                    targets = targets.to(self.device)
+                    sensitive_attr = sensitive_attr.to(self.device)
+
+                    images = (input_ids, attention_mask)
+                else:
+                    images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+
                 outputs, features = self.network.inference(images)
                 loss = self._criterion_domain(outputs, targets, sensitive_attr)
                 val_loss += loss.item()
@@ -114,8 +132,17 @@ class DomainInd(baseline):
         tol_output, tol_target, tol_sensitive, tol_index = [], [], [], []
         with torch.no_grad():
             for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
-                    self.device)
+                if isinstance(images, list): # for text models
+                    input_ids, attention_mask = images[0],images[1]
+                    input_ids = input_ids.to(self.device)
+                    attention_mask = attention_mask.to(self.device)
+                    targets = targets.to(self.device)
+                    sensitive_attr = sensitive_attr.to(self.device)
+
+                    images = (input_ids, attention_mask)
+                else:
+                    images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+
                 outputs, features = self.network.inference(images)
                 outputs = self.inference_sum_prob(outputs)
     

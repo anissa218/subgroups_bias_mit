@@ -36,8 +36,6 @@ if __name__ == "__main__":
     save_data_folder = args.save_data_folder
     folder_name = args.folder_name
 
-    PACEMAKER_IS_1 = True
-
     # params
 
     size_per_group_test = 70
@@ -119,10 +117,7 @@ if __name__ == "__main__":
     subset_df = metadata_df.copy()
     subset_df = subset_df[subset_df['Path'].isin(annotations_list)]
 
-    if PACEMAKER_IS_1:
-        subset_df['Pacemaker'] = subset_df['Path'].apply(lambda x: 1 if x in pacemaker_list else 0)
-    else:
-        subset_df['Pacemaker'] = subset_df['Path'].apply(lambda x: 0 if x in pacemaker_list else 1)
+    subset_df['Pacemaker'] = subset_df['Path'].apply(lambda x: 1 if x in pacemaker_list else 0)
 
     subset_df['binary_label'] = subset_df['Pleural Effusion'].apply(lambda x: 1 if x == 1 else 0)
     subset_df['Sex_binary'] = subset_df['Sex'].apply(lambda x: 1 if x == 'Female' else 0)

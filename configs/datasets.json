@@ -1,22 +1,48 @@
 {
     "CXP":
     {
-        "image_feature_path": "yourpath",
-        "root_path": "yourpath",
+        "image_feature_path": "",
+        "root_path": "",
             "pickle_train_path": "pkls/train_images.pkl",
             "pickle_val_path": "pkls/val_images.pkl",
             "pickle_test_path": "pkls/test_images.pkl",
+            "pickle_ext_test_path": "pkls/ext_test_images.pkl",
             "train_meta_path": "splits/train.csv",
             "val_meta_path": "splits/val.csv",
-            "test_meta_path": "splits/test.csv"   
+            "test_meta_path": "splits/test.csv",
+            "ext_test_meta_path": "splits/ext_test.csv"   
      },
     "MNIST":
     {
-        "image_feature_path": "yourpath",
-        "root_path":"yourpath",
+        "image_feature_path": "",
+        "root_path":"",
         "pickle_train_path": "pkls/train_images.pt",
         "pickle_val_path": "pkls/val_images.pt",
         "pickle_test_path": "pkls/test_images.pt",
+        "pickle_ext_test_path": "pkls/ext_test_images.pt",
+        "train_meta_path": "splits/train.csv",
+        "val_meta_path": "splits/val.csv",
+        "test_meta_path": "splits/test.csv",
+        "ext_test_meta_path": "splits/ext_test.csv"
+    },
+    "CELEBA":
+    {
+        "image_feature_path": "",
+        "root_path":"",
+        "pickle_train_path": "pkls/train_images.pkl",
+        "pickle_val_path": "pkls/val_images.pkl",
+        "pickle_test_path": "pkls/test_images.pkl",
+        "train_meta_path": "splits/train.csv",
+        "val_meta_path": "splits/val.csv",
+        "test_meta_path": "splits/test.csv"
+    },
+    "CIVILCOMMENTS":
+    {
+        "image_feature_path": "",
+        "root_path":"",
+        "pickle_train_path": "pkls/train_images.pkl",
+        "pickle_val_path": "pkls/val_images.pkl",
+        "pickle_test_path": "pkls/test_images.pkl",
         "train_meta_path": "splits/train.csv",
         "val_meta_path": "splits/val.csv",
         "test_meta_path": "splits/test.csv"

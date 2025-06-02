@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models.feature_extraction import create_feature_extractor
 import torch
+from transformers import BertModel, BertTokenizer, AutoModel
 
 
 class cusResNet18(nn.Module):    
@@ -182,3 +183,21 @@ class InceptionV3(cusResNet18):
             outputs = outputs[0]
         features = self.feature_extractor(x) # to get feature extraction to analyse image reprsentations
         return outputs, features[self.returnkey_avg].squeeze()
+
+class cusBERTClassifier(nn.Module):
+    def __init__(self, n_classes, pretrained = True):
+        super(cusBERTClassifier, self).__init__()
+        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.hidden_size = self.bert.config.hidden_size
+        
+        self.classifier = nn.Linear(self.hidden_size, n_classes)
+    
+    def forward(self, x):
+        input_ids, attention_mask = x[0],x[1]
+        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output = outputs.pooler_output  # [CLS] token representation
+        logits = self.classifier(pooled_output)
+        return logits, pooled_output  # like your vision models: (final_output, penultimate_features)
+
+    def inference(self, x):
+        return self.forward(x)

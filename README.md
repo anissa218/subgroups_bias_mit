@@ -1,12 +1,14 @@
 # Subgroups Matter for Robust Bias Mitigation
 
-Code for paper submitted to ICML 2025.
+Code for [paper](https://arxiv.org/abs/2505.21363) accepted to ICML 2025.
 
 Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
 
 ## Introduction
 
-TODO
+In this paper we seek to understand whether subgroup definition may be contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our results reveal that subgroup choice significantly impacts performance, with certain groupings paradoxically leading to worse outcomes than no mitigation at all. Our findings suggest that observing a disparity between a set of subgroups is not a sufficient reason to use those subgroups for mitigation. Through theoretical analysis, we explain these phenomena and uncover a counter-intuitive insight that, in some cases, improving fairness with respect to a particular set of subgroups is best achieved by using a different set of subgroups for mitigation. Overall, this paper highlights the importance of careful subgroup definition in bias mitigation and presents it as an alternative lever for improving the robustness and fairness of machine learning models.
+
+We provide the code to reproduce the experiments from the paper, including how to generate the biased datasets, how to train a baseline model, how to train the bias mitigation models with different subgroups, and how to calculate the KL divergence between each weighted training distribution and the unbiased test distribution.
 
 ## Quick Start
 
@@ -15,7 +17,7 @@ Python >= 3.8+ and Pytorch >=1.10 are required for running the code.
 
 ```python
 cd subgroups_bias_mit/
-pip install -r my_requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Dataset
@@ -24,6 +26,10 @@ pip install -r my_requirements.txt
 
 **CheXPert** images are also publicly available and can be downloaded through this [website](https://stanfordmlgroup.github.io/competitions/chexpert/). 
 Additionally, pacemaker annotations were used, which are kindly provided in this [repository](https://github.com/HarryAnthony/Mahalanobis-OOD-detection).
+
+**CelebA** images can be downloaded from [kaggle](https://www.kaggle.com/api/v1/datasets/download/jessicali9530/celeba-dataset).
+
+**Civil_comments** csv files can also be downloaded from [kaggle](https://www.kaggle.com/competitions/jigsaw-unintended-bias-in-toxicity-classification/data).
 
 ### Constructing biased datasets and subgroups
 
@@ -88,7 +94,14 @@ We provide example code to analyse results and reproduce the plots made in the p
 ## Citation
 Please consider citing our paper if you find this repo useful.
 ```
-TODO
+@inproceedings{alloula2025subgroups,
+  title     = {Subgroups Matter for Robust Bias Mitigation},
+  author    = {Alloula, Anissa and Jones, Charles and Glocker, Ben and Papież, Bartłomiej W.},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning (ICML)},
+  year      = {2025},
+  url       = {https://arxiv.org/abs/2505.21363},
+  note      = {arXiv:2505.21363 [cs.LG]}
+}
 ```
 
 ## Acknowledgement

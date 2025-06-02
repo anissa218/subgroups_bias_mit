@@ -16,7 +16,18 @@ def standard_train(opt, network, optimizer, loader, _criterion, wandb,scheduler=
     print('start standard train')
 
     for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-        images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(opt['device'])
+
+        if isinstance(images, list): # for text models
+            input_ids, attention_mask = images[0],images[1]
+            input_ids = input_ids.to(opt['device'])
+            attention_mask = attention_mask.to(opt['device'])
+            targets = targets.to(opt['device'])
+            sensitive_attr = sensitive_attr.to(opt['device'])
+
+            images = (input_ids, attention_mask)
+        else:
+            images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(opt['device'])
+        
         optimizer.zero_grad()
         outputs, _ = network(images)
         loss = _criterion(outputs, targets)
@@ -57,8 +68,17 @@ def standard_val(opt, network, loader, _criterion, sens_classes, wandb):
     with torch.no_grad():
 
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(
-                opt['device'])
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(opt['device'])
+                attention_mask = attention_mask.to(opt['device'])
+                targets = targets.to(opt['device'])
+                sensitive_attr = sensitive_attr.to(opt['device'])
+
+                images = (input_ids, attention_mask)
+            else:
+                images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(opt['device'])
+            
             outputs, features = network.forward(images)
 
             loss = _criterion(outputs, targets)
@@ -94,8 +114,17 @@ def standard_test(opt, network, loader, _criterion, wandb):
     with torch.no_grad():
         feature_vectors = []
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(
-                opt['device'])
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(opt['device'])
+                attention_mask = attention_mask.to(opt['device'])
+                targets = targets.to(opt['device'])
+                sensitive_attr = sensitive_attr.to(opt['device'])
+
+                images = (input_ids, attention_mask)
+            else:
+                images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(opt['device'])
+
             outputs, features = network.inference(images) 
 
             feature_vectors.append(features.to('cpu'))
@@ -137,8 +166,17 @@ def gdro_val(opt, network, loader, _criterion, sens_classes, wandb,val_data,pure
     with torch.no_grad():
 
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(
-                opt['device'])
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(opt['device'])
+                attention_mask = attention_mask.to(opt['device'])
+                targets = targets.to(opt['device'])
+                sensitive_attr = sensitive_attr.to(opt['device'])
+
+                images = (input_ids, attention_mask)
+            else:
+                images, targets, sensitive_attr = images.to(opt['device']), targets.to(opt['device']), sensitive_attr.to(
+                    opt['device'])
             outputs, features = network.forward(images)
             loss = _criterion(outputs, targets)
             group_loss,mean_loss,loss,worst_index,weights = val_loss_computer.loss(outputs, targets, sensitive_attr, is_training=False)

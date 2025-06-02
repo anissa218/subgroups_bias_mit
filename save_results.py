@@ -12,9 +12,9 @@ import argparse
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Process and save CXP and MNIST results.")
-    parser.add_argument("--data", type=str, default = 'CheXpert-v1.0-small', choices = ['CheXpert-v1.0-small','mnist'], help="Data to use: CheXpert-v1.0-small or mnist")
-    parser.add_argument('--method', type=str, required=True, choices = ['GroupDRO', 'baseline', 'resampling', 'DomainInd', 'CFair'], help="Method to use: GroupDRO, DomainInd, CFair, resampling or baseline.")
+    parser = argparse.ArgumentParser(description="Process and save results.")
+    parser.add_argument("--data", type=str, default = 'CheXpert-v1.0-small', choices = ['CheXpert-v1.0-small','mnist','celeba','civilcomments'], help="Data to use")
+    parser.add_argument('--method', type=str, required=True, choices = ['GroupDRO', 'baseline', 'resampling', 'DomainInd', 'CFair','subsampling'], help="Method to use: GroupDRO, DomainInd, CFair, resampling or baseline.")
     parser.add_argument("--root_folder", type=str, required = True, help="Path to the root folder (where data, results etc. are all saved) ")
     parser.add_argument("--experiment_folder", type=str, required = True, help="Path to parent directory where model runs are stored")
     parser.add_argument("--data_folder", type=str, required = True, help="Data configuration used for experiments") # or 'two_variables
@@ -45,27 +45,51 @@ if __name__ == "__main__":
         preprocessing_function = preprocess_chexpert_data
         if model_backbone == []:
             model_backbone = 'cusDenseNet121'
+
     elif data == 'mnist':
         data_type = 'MNIST'
         preprocessing_function = preprocess_mnist_data
         if model_backbone == []:
             model_backbone = 'SimpleCNN'
+    
+    elif data == 'celeba':
+        data_type = 'CELEBA'
+        preprocessing_function = preprocess_mnist_data
+        model_backbone = 'cusResNet50'
+    
+    elif data == 'civilcomments':
+        data_type = 'CIVILCOMMENTS'
+        preprocessing_function = preprocess_mnist_data
+        model_backbone = 'cusBERTClassifier'
 
     experiment_folder = os.path.join(experiment_folder, data_type) #Age/SimpleCNN/GroupDRO'
 
     if experiments == []: # default experiments
-        experiments = ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
-        #experiments = ['AY','SY']
-        if method == 'CFair':
-            experiments = ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
-        if method == 'DomainInd':
-            experiments = ['Artefact','A_4','Sex','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+        
+        if data == 'mnist' or data == 'CheXpert-v1.0-small':
 
-    subgroups = ['Sex_binary']
+            experiments = ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_050','Random','Majority','YAS'] #'noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025'
+            #experiments = ['AY','SY']
+            if method == 'CFair':
+                experiments = ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+            if method == 'DomainInd':
+                experiments = ['Artefact','A_4','Sex','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+            
+            subgroups = ['Sex_binary']
+
+        elif data == 'celeba' or data == 'civilcomments': # newer naming
+
+            experiments = ['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
+                #experiments = ['AY','SY']
+            if method == 'CFair':
+                experiments = ['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+            if method == 'DomainInd':
+                experiments = ['A','A_4','S','S_4','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050','AS']
+            subgroups = ['S']
 
     model_name = os.path.join(model_backbone,method,wandb_name)
 
-    if method == 'baseline' or method == 'resampling' or method == 'EnD' or method == 'CFair':
+    if method == 'baseline' or method == 'resampling' or method == 'EnD' or method == 'CFair' or method == 'subsampling':
         pred_file = 'pretrained_pred.csv'
     elif method == 'ODR':
         pred_file = 'pred.csv'
@@ -85,8 +109,10 @@ if __name__ == "__main__":
         val_threshold_dict[experiment] = {}
         for random_seed in random_seed_folders:
             results_folder = os.path.join(root_folder,experiment_folder,experiment,model_name,random_seed)
-
-            val_df = pd.read_csv(os.path.join(results_folder,'best_val_pred.csv'))
+            try:
+                val_df = pd.read_csv(os.path.join(results_folder,'best_val_pred.csv'))
+            except FileNotFoundError:
+                print('no val results found for',experiment,random_seed)
             val_threshold = find_balanced_acc_threshold(val_df['raw_pred'],val_df['label'])
 
             val_threshold_dict[experiment][random_seed] = val_threshold

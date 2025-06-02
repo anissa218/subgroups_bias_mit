@@ -80,7 +80,18 @@ class GroupDRO(BaseNet):
         dro_results = {}
         group_losses, mean_losses, losses,avg_group_losses,worst_train_indices,list_of_weights = [], [], [], [],[],[]
         for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-            images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
+            
+            if isinstance(images, list): # for text models
+                input_ids, attention_mask = images[0],images[1]
+                input_ids = input_ids.to(self.device)
+                attention_mask = attention_mask.to(self.device)
+                targets = targets.to(self.device)
+                sensitive_attr = sensitive_attr.to(self.device)
+
+                images = (input_ids, attention_mask)
+
+            else:
+                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(self.device)
             self.optimizer.zero_grad()
             outputs, features = self.network.forward(images)
             
@@ -164,8 +175,20 @@ class GroupDRO(BaseNet):
 
         with torch.no_grad():
             for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
-                    self.device)
+
+                if isinstance(images, list): # for text models
+                    input_ids, attention_mask = images[0],images[1]
+                    input_ids = input_ids.to(self.device)
+                    attention_mask = attention_mask.to(self.device)
+                    targets = targets.to(self.device)
+                    sensitive_attr = sensitive_attr.to(self.device)
+
+                    images = (input_ids, attention_mask)
+                
+                else:
+                    images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
+                        self.device)
+
                 outputs, features = self.network.inference(images)
                 if self.use_train_loss_for_val:
                     print('using train loss weights for val')
@@ -229,8 +252,20 @@ class GroupDRO(BaseNet):
             feature_vectors = []
 
             for i, (images, targets, sensitive_attr, index) in enumerate(loader):
-                images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
-                    self.device)
+
+                if isinstance(images, list): # for text models
+                    input_ids, attention_mask = images[0],images[1]
+                    input_ids = input_ids.to(self.device)
+                    attention_mask = attention_mask.to(self.device)
+                    targets = targets.to(self.device)
+                    sensitive_attr = sensitive_attr.to(self.device)
+
+                    images = (input_ids, attention_mask)
+
+                else:
+                    images, targets, sensitive_attr = images.to(self.device), targets.to(self.device), sensitive_attr.to(
+                        self.device)
+                        
                 outputs, features = self.network.inference(images)
                 feature_vectors.append(features.to('cpu'))
 

@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # PARAMS
 
-    n_images_train = 5000
+    n_images_train = 53333 #5000 
 
     prop_images_val = 0.125
     n_images_val = int(n_images_train * prop_images_val)
