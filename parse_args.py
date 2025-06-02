@@ -71,12 +71,12 @@ def collect_args(args=None):
     
     parser.add_argument('--adjust_size', type=str2bool, nargs='?',
                         const=False, default=False,
-                        help='if using smaller proportion of data') # anissa changes
+                        help='if using smaller proportion of data')
     parser.add_argument('--dataset_size',type=float,default=100,help='size of dataset to be used relative to full dataset, should be 0.01, 0.02,0.1,0.2,0.5,1.0') # anissa changes
     parser.add_argument('--adjust_centre', type=str2bool, nargs='?',
                         const=False, default=False,
-                        help='if excluding one assessment centre') # anissa changes
-    parser.add_argument('--centre_name',type=float,default=0,help='centre to exclude from training, should be int from 0-5') # anissa changes
+                        help='if excluding one assessment centre')
+    parser.add_argument('--centre_name',type=float,default=0,help='centre to exclude from training, should be int from 0-5')
 
     # training 
     parser.add_argument('--random_seed', type=int, default=42)
@@ -92,7 +92,7 @@ def collect_args(args=None):
     parser.add_argument('--hyper_search', type=bool, default=False, help = 'if searching hyper-parameters')
     parser.add_argument('--augment', type=str2bool, nargs='?',
                         const=True, default=True,
-                        help='if using data augmentation') # anissa changes
+                        help='if using data augmentation')
     parser.add_argument('--pos_weight', type=float, default=1.0, help = 'weight for positive class in loss function')    
     parser.add_argument('--optimizer', type=str, default='Adam', choices=['Adam', 'AdamW', 'SGD'], help='optimizer for training')
     # testing
@@ -115,7 +115,7 @@ def collect_args(args=None):
     #parser.add_argument('--pretrained', type=bool, default=True, help = 'if use pretrained ResNet backbone') 
     parser.add_argument("--pretrained", type=str2bool, nargs='?',
                         const=True, default=True,
-                        help='if use pretrained ResNet backbone') # anissa changes
+                        help='if use pretrained ResNet backbone')
 
     parser.add_argument('--output_dim', type=int, default=14, help='output dimension of the classification network')
     parser.add_argument('--num_classes', type=int, default=14, help='number of target classes')
