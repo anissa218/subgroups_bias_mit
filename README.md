@@ -1,16 +1,18 @@
 # Subgroups Matter for Robust Bias Mitigation
 
-Code for [paper](https://arxiv.org/abs/2505.21363) accepted to ICML 2025.
+This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation."**
 
-Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
+NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
 
 ## Introduction
 
-This is the repository for the ICML 2025 paper "Subgroups Matter for Robust bias Mitigation". In this paper, we seek to understand whether subgroup definition may be contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. 
+In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our key finding is that **subgroup choice strongly influences fairness and generalisation**, sometimes harming performance more than applying no mitigation at all. We highlight the importance of careful subgroup definition in bias mitigation and present it as an alternative lever for improving the robustness and fairness of machine learning models.
 
-Our results reveal that subgroup choice significantly impacts performance, with certain groupings paradoxically leading to worse outcomes than no mitigation at all. Our findings suggest that observing a disparity between a set of subgroups is not a sufficient reason to use those subgroups for mitigation. Through theoretical analysis, we explain these phenomena and uncover a counter-intuitive insight that, in some cases, improving fairness with respect to a particular set of subgroups is best achieved by using a different set of subgroups for mitigation. Overall, this paper highlights the importance of careful subgroup definition in bias mitigation and presents it as an alternative lever for improving the robustness and fairness of machine learning models.
-
-We provide the code to reproduce the experiments from the paper, including how to generate the biased datasets, how to train a baseline model, how to train the bias mitigation models with different subgroups, and how to calculate the KL divergence between each weighted training distribution and the unbiased test distribution.
+This repo includes:
+- Code to generate biased datasets and different subgroups
+- Training code for ERM and bias mitigation baselines
+- Tools to measure KL divergence between training/test distributions
+- Scripts to reproduce all plots from the paper
 
 ## Quick Start
 
@@ -40,7 +42,7 @@ To generate the biased training/val datasets and unbiased test dataset and to co
 python preprocessing/make_[mnist/cxp/celeba/civilcomments]_dataset.py --raw_data_folder [path_to_raw_data] --root_folder [root_path] --folder_name [folder_name] --manual_annotations_folder [path_to_manual_annotations (CXP only)]
 ```
 
-Preprocessed images and splits with the additional metadata are saved in data/[dataset_name]/pkls and data/[dataset_name]/splits respectively.
+Preprocessed images and splits with the additional metadata are saved in `data/[dataset_name]/pkls` and `data/[dataset_name]/splits` respectively.
  
 After preprocessing, specify the paths of the metadata and pickle files in `configs/datasets.json`.
 
@@ -53,16 +55,16 @@ python main.py --experiment [experiment] --wandb_name [experiment_name] --datase
      --output_dim [output_dim] --num_classes [num_classes]
 ```
 
-See `parse_args.py` for more options.
+See `parse_args.py` for all configurable flags.
 
 ### Reproduce our experiments
 
-To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation [sensitive_name] and [sens_classes] accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly. We provide example training scripts for training a baseline model with ERM for the four datasets with our hyperparameters.
+To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in `[GroupDRO, resampling, DomainInd, CFair]` and varying the subgroup for mitigation `[sensitive_name]` and `[sens_classes]` accordingly. Also change `[wandb_name]`, `[data_folder]`, and `[random_seed]` accordingly. We provide example training scripts for training a baseline model with ERM for the four datasets with our hyperparameters.
 
 Possible subgroups are:
-- for gDRO and resampling: ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
-- for DomainInd: ['Artefact','A_4','Sex','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
-- for CFair: ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+- for gDRO and resampling: `['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']`
+- for DomainInd: `['A','A_4','S','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
+- for CFair: `['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']`
 
 ```python
 # MNIST
@@ -91,6 +93,15 @@ This will save dictionaries containing relevant analyses for each experiment in 
 ### Analyse results
 
 We provide example code to analyse results and reproduce the plots made in the paper in the `notebooks/` folder.
+
+### ✅ Reproduction Checklist
+
+- [ ] Download raw datasets
+- [ ] Run preprocessing scripts to generate biased datasets and subgroup annotations
+- [ ] Set dataset paths in `configs/datasets.json`
+- [ ] Train models with `main.py`
+- [ ] Run `save_results.py` to process outputs
+- [ ] Analyze results using notebooks in `/notebooks`
 
 ## Citation
 Please consider citing our paper if you find this repo useful.
