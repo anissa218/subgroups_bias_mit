@@ -117,8 +117,8 @@ def collect_args(args=None):
                         const=True, default=True,
                         help='if use pretrained ResNet backbone')
 
-    parser.add_argument('--output_dim', type=int, default=14, help='output dimension of the classification network')
-    parser.add_argument('--num_classes', type=int, default=14, help='number of target classes')
+    parser.add_argument('--output_dim', type=int, default=1, help='output dimension of the classification network')
+    parser.add_argument('--num_classes', type=int, default=1, help='number of target classes')
     parser.add_argument('--sens_classes', type=int, default=2, help='number of sensitive classes')
     parser.add_argument('--input_channel', type=int, default=3, help='input channel of the images')
     
