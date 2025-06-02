@@ -65,27 +65,13 @@ if __name__ == "__main__":
     experiment_folder = os.path.join(experiment_folder, data_type) #Age/SimpleCNN/GroupDRO'
 
     if experiments == []: # default experiments
-        
-        if data == 'mnist' or data == 'CheXpert-v1.0-small':
-
-            experiments = ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_050','Random','Majority','YAS'] #'noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025'
-            #experiments = ['AY','SY']
-            if method == 'CFair':
-                experiments = ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
-            if method == 'DomainInd':
-                experiments = ['Artefact','A_4','Sex','S_4','AS','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
-            
-            subgroups = ['Sex_binary']
-
-        elif data == 'celeba' or data == 'civilcomments': # newer naming
-
-            experiments = ['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
-                #experiments = ['AY','SY']
-            if method == 'CFair':
-                experiments = ['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
-            if method == 'DomainInd':
-                experiments = ['A','A_4','S','S_4','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050','AS']
-            subgroups = ['S']
+    
+        experiments = ['A','AY','AY_8','S','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
+        if method == 'CFair':
+            experiments = ['A','S','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
+        if method == 'DomainInd':
+            experiments = ['A','A_4','S','S_4','Random','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050','AS']
+        subgroups = ['S']
 
     model_name = os.path.join(model_backbone,method,wandb_name)
 
