@@ -2,8 +2,6 @@
 
 This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation."**
 
-NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
-
 ## Introduction
 
 In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our main conclusion is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we argue that subgroup definition is as important of a step as, e.g., the choice of mitigation method, and requires careful consideration.
@@ -122,9 +120,9 @@ Please consider citing our paper if you find this repo useful.
 }
 ```
 
-## Acknowledgement
+## Acknowledgements
 
-We thank MEDFAIR authors and their detailed repo which provided initial code for this work and Harry Anthony for providing CheXPert pacemaker annotations.
+We thank [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/) authors and their detailed repo which provided initial code for this work and Harry Anthony for providing CheXPert pacemaker annotations.
 ```
 @inproceedings{zong2023medfair,
     title={MEDFAIR: Benchmarking Fairness for Medical Imaging},
