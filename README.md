@@ -6,7 +6,9 @@ Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-z
 
 ## Introduction
 
-In this paper we seek to understand whether subgroup definition may be contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our results reveal that subgroup choice significantly impacts performance, with certain groupings paradoxically leading to worse outcomes than no mitigation at all. Our findings suggest that observing a disparity between a set of subgroups is not a sufficient reason to use those subgroups for mitigation. Through theoretical analysis, we explain these phenomena and uncover a counter-intuitive insight that, in some cases, improving fairness with respect to a particular set of subgroups is best achieved by using a different set of subgroups for mitigation. Overall, this paper highlights the importance of careful subgroup definition in bias mitigation and presents it as an alternative lever for improving the robustness and fairness of machine learning models.
+This is the repository for the ICML 2025 paper "Subgroups Matter for Robust bias Mitigation". In this paper, we seek to understand whether subgroup definition may be contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. 
+
+Our results reveal that subgroup choice significantly impacts performance, with certain groupings paradoxically leading to worse outcomes than no mitigation at all. Our findings suggest that observing a disparity between a set of subgroups is not a sufficient reason to use those subgroups for mitigation. Through theoretical analysis, we explain these phenomena and uncover a counter-intuitive insight that, in some cases, improving fairness with respect to a particular set of subgroups is best achieved by using a different set of subgroups for mitigation. Overall, this paper highlights the importance of careful subgroup definition in bias mitigation and presents it as an alternative lever for improving the robustness and fairness of machine learning models.
 
 We provide the code to reproduce the experiments from the paper, including how to generate the biased datasets, how to train a baseline model, how to train the bias mitigation models with different subgroups, and how to calculate the KL divergence between each weighted training distribution and the unbiased test distribution.
 
@@ -35,8 +37,7 @@ Additionally, pacemaker annotations were used, which are kindly provided in this
 
 To generate the biased training/val datasets and unbiased test dataset and to construct all the subgroup annotations, run the following code. 
 ```
-python make_mnist_dataset.py --raw_data_folder [path_to_raw_data] --root_folder [root_path] --folder_name [folder_name]
-python make_cxp_dataset.py --raw_data_folder [path_to_raw_data] --manual_annotations_folder [path_to_manual_annotations] --root_folder [root_path] --folder_name [folder_name]
+python preprocessing/make_[mnist/cxp/celeba/civilcomments]_dataset.py --raw_data_folder [path_to_raw_data] --root_folder [root_path] --folder_name [folder_name] --manual_annotations_folder [path_to_manual_annotations (CXP only)]
 ```
 
 Preprocessed images and splits with the additional metadata are saved in data/[dataset_name]/pkls and data/[dataset_name]/splits respectively.
