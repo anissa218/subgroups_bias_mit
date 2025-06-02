@@ -6,7 +6,7 @@ NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/
 
 ## Introduction
 
-In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our key finding is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we highlight the importance of careful subgroup definition in bias mitigation and present it as an alternative lever for improving the robustness and fairness of machine learning models.
+In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our main conclusion is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we argue that subgroup definition is as important of a step as, e.g., the choice of mitigation method, and requires careful consideration.
 
 This repo includes:
 - Code to generate biased datasets and different subgroups
