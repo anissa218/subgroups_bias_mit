@@ -1,16 +1,20 @@
 # Subgroups Matter for Robust Bias Mitigation
 
-Code for [paper](https://arxiv.org/abs/2505.21363) accepted to ICML 2025.
+This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation."**
 
-Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
+NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
 
 ## Introduction
 
-This is the repository for the ICML 2025 paper "Subgroups Matter for Robust bias Mitigation". In this paper, we seek to understand whether subgroup definition may be contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. 
+This repository contains the code for the ICML 2025 paper **"Subgroups Matter for Robust Bias Mitigation."**
 
-Our results reveal that subgroup choice significantly impacts performance, with certain groupings paradoxically leading to worse outcomes than no mitigation at all. Our findings suggest that observing a disparity between a set of subgroups is not a sufficient reason to use those subgroups for mitigation. Through theoretical analysis, we explain these phenomena and uncover a counter-intuitive insight that, in some cases, improving fairness with respect to a particular set of subgroups is best achieved by using a different set of subgroups for mitigation. Overall, this paper highlights the importance of careful subgroup definition in bias mitigation and presents it as an alternative lever for improving the robustness and fairness of machine learning models.
+In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our key finding is that **subgroup choice strongly influences fairness and generalisation**, sometimes harming performance more than applying no mitigation at all. We highlight the importance of careful subgroup definition in bias mitigation and present it as an alternative lever for improving the robustness and fairness of machine learning models.
 
-We provide the code to reproduce the experiments from the paper, including how to generate the biased datasets, how to train a baseline model, how to train the bias mitigation models with different subgroups, and how to calculate the KL divergence between each weighted training distribution and the unbiased test distribution.
+This repo includes:
+- Code to generate biased datasets and different subgroups
+- Training code for ERM and bias mitigation baselines
+- Tools to measure KL divergence between training/test distributions
+- Scripts to reproduce all plots from the paper
 
 ## Quick Start
 
@@ -53,7 +57,7 @@ python main.py --experiment [experiment] --wandb_name [experiment_name] --datase
      --output_dim [output_dim] --num_classes [num_classes]
 ```
 
-See `parse_args.py` for more options.
+See `parse_args.py` for all configurable flags.
 
 ### Reproduce our experiments
 
@@ -91,6 +95,15 @@ This will save dictionaries containing relevant analyses for each experiment in 
 ### Analyse results
 
 We provide example code to analyse results and reproduce the plots made in the paper in the `notebooks/` folder.
+
+### ✅ Reproduction Checklist
+
+- [ ] Download raw datasets
+- [ ] Run preprocessing scripts to generate biased datasets and subgroup annotations
+- [ ] Set dataset paths in `configs/datasets.json`
+- [ ] Train models with `main.py`
+- [ ] Run `save_results.py` to process outputs
+- [ ] Analyze results using notebooks in `/notebooks`
 
 ## Citation
 Please consider citing our paper if you find this repo useful.
