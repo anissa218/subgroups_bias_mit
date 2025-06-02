@@ -172,6 +172,7 @@ bash_scripts/
 your_path/
 wandb/
 loo_experiments/
+plots/
 
 # personal results files
 *.pkl

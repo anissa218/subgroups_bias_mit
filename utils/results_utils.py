@@ -711,17 +711,6 @@ def plot_subgroup_stats(train_preds, val_preds, col_name,plot_gap=False,plot_auc
         make_subplots(axs[3, 0], train_auc_list, overall_train_auc, 'Training AUC',plot_gap=plot_gap,plot_all=plot_all)
         make_subplots(axs[3, 1], val_auc_list, overall_val_auc,'Validation AUC',plot_gap=plot_gap,plot_all=plot_all)
 
-    # make_subplots(axs[4, 0], train_tnr_list, overall_train_tnr, 'Training TNR',plot_gap=plot_gap,plot_all=plot_all)
-    # make_subplots(axs[4, 1], val_tnr_list, overall_val_tnr, 'Validation TNR', plot_gap=plot_gap,plot_all=plot_all)
-
-    # train_balanced_acc_list = ((np.array(train_recall_list) + np.array(train_tnr_list))/2).tolist()
-    # val_balanced_acc_list = ((np.array(val_recall_list) + np.array(val_tnr_list))/2).tolist()
-
-    # make_subplots(axs[5, 0], train_balanced_acc_list, overall_train_tnr, 'Training Balanced Accuracy',plot_gap=plot_gap,plot_all=plot_all)
-    # make_subplots(axs[5, 1], val_balanced_acc_list, overall_val_tnr, 'Validation Balanced Accuracy', plot_gap=plot_gap,plot_all=plot_all)
-
-
-    #plt.suptitle('Fairness during training for ' + col_name + ' subgroups')
     plt.tight_layout()
     plt.show()
 
@@ -771,21 +760,6 @@ def plot_subgroup_model_stats(train_preds_list, val_preds_list, col_name,plot_ga
         train_auc_list = get_subgroup_auc(train_preds,col_name)
         val_auc_list = get_subgroup_auc(val_preds,col_name)
         overall_train_auc,overall_val_auc = get_overall_auc(train_preds,val_preds)
-
-        # make_subplots(axs[i, 0], train_auc_list, overall_train_auc, 'Training AUC',plot_gap=plot_gap,plot_all=plot_all)
-        # make_subplots(axs[i, 1], val_auc_list, overall_val_auc,'Validation AUC',plot_gap=plot_gap,plot_all=plot_all)
-
-        # make_subplots(axs[0, 0], train_acc_list, overall_train_acc, 'Training Accuracy',plot_gap=plot_gap,plot_all=plot_all)
-        # make_subplots(axs[0, 1], val_acc_list, overall_val_acc, 'Validation Accuracy',plot_gap=plot_gap,plot_all=plot_all)
-        
-        # make_subplots(axs[1, 0], train_precision_list, overall_train_precision, 'Training Precision',plot_gap=plot_gap,plot_all=plot_all)
-        # make_subplots(axs[1, 1], val_precision_list, overall_val_precision,'Validation Precision',plot_gap=plot_gap,plot_all=plot_all)
-
-        # make_subplots(axs[2, 0], train_recall_list, overall_train_recall, 'Training Recall',plot_gap=plot_gap,plot_all=plot_all)
-        # make_subplots(axs[2, 1], val_recall_list, overall_val_recall, 'Validation Recall', plot_gap=plot_gap,plot_all=plot_all)
-
-        # make_subplots(axs[i, 0], train_tnr_list, overall_train_tnr, 'Training TNR',plot_gap=plot_gap,plot_all=plot_all)
-        # make_subplots(axs[i, 1], val_tnr_list, overall_val_tnr, 'Validation TNR', plot_gap=plot_gap,plot_all=plot_all)
 
         train_balanced_acc_list = ((np.array(train_recall_list) + np.array(train_tnr_list))/2).tolist()
         val_balanced_acc_list = ((np.array(val_recall_list) + np.array(val_tnr_list))/2).tolist()
