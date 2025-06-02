@@ -62,7 +62,7 @@ if __name__ == "__main__":
         preprocessing_function = preprocess_mnist_data
         model_backbone = 'cusBERTClassifier'
 
-    experiment_folder = os.path.join(experiment_folder, data_type) #Age/SimpleCNN/GroupDRO'
+    experiment_folder = os.path.join(experiment_folder, data_type)
 
     if experiments == []: # default experiments
     

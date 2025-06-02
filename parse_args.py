@@ -184,12 +184,6 @@ def collect_args(args=None):
     
     # logging 
     parser.add_argument('--log_freq', type=int, default=50, help = 'logging frequency (step)')
-    
-    # anissa test (to run in jupyter notebook)
-    if args is None:
-        opt = vars(parser.parse_args())
-    else:
-        opt = vars(parser.parse_args(args))
 
     opt = create_exerpiment_setting(opt)
     return opt
@@ -216,8 +210,6 @@ def create_exerpiment_setting(opt, do_wandb=True):
         'weight_decay': opt['weight_decay'],
     }
     opt['optimizer_setting'] = optimizer_setting
-
-    print('early stopping: ', opt['early_stopping'])
     
     optimizer_setting2 = {
         'optimizer': torch.optim.Adam,
@@ -285,7 +277,7 @@ def create_exerpiment_setting(opt, do_wandb=True):
             with open('configs/wandb_init.json') as f:
                 wandb_args = json.load(f)
             wandb_args["tags"] = [opt['hash']]
-            wandb_args["name"] = opt['wandb_name'] # anissa changed this
+            wandb_args["name"] = opt['wandb_name']
             wandb.init(**wandb_args, config = opt)
         else:
             wandb = None

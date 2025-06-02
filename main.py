@@ -21,8 +21,7 @@ def train(model, opt):
 if __name__ == '__main__':
     
     opt, wandb = parse_args.collect_args()
-    print('pretrained after collect args: ')
-    print(opt['pretrained'])
+
     if not opt['test_mode']:
         
         random_seeds = [opt['random_seed']]
