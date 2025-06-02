@@ -100,7 +100,7 @@ This will save dictionaries containing relevant analyses for each experiment in 
 
 We provide example code to analyse results and reproduce the plots made in the paper in the `notebooks/` folder.
 
-### ✅ Reproduction Checklist
+### Reproduction Checklist
 
 - [ ] Download raw datasets
 - [ ] Run preprocessing scripts to generate biased datasets and subgroup annotations
