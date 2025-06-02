@@ -56,7 +56,7 @@ See `parse_args.py` for more options.
 
 ### Reproduce our experiments
 
-To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation [sensitive_name] and [sens_classes] accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly.
+To reproduce all the MNIST and CXP experiments in the paper, run the following code for mitigation experiments in [GroupDRO, resampling, DomainInd, CFair] and varying the subgroup for mitigation [sensitive_name] and [sens_classes] accordingly. Also change [wandb_name], [data_folder], and [random_seed] accordingly. We provide example training scripts for training a baseline model with ERM for the four datasets with our hyperparameters.
 
 Possible subgroups are:
 - for gDRO and resampling: ['Artefact','AY','AY_8','Sex','SY','SY_8','Y','noisy_AY_001','noisy_AY_005','noisy_AY_010','noisy_AY_025','noisy_AY_050','Random','Majority','YAS']
@@ -64,26 +64,26 @@ Possible subgroups are:
 - for CFair: ['Artefact','Sex','Majority','noisy_A_001','noisy_A_005','noisy_A_010','noisy_A_025','noisy_A_050']
 
 ```python
-## MNIST ##
-# baseline model
-python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --groupdro_adj 1 --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1  --random_seed [random_seed]
-# mitigation model
-python main.py --experiment [mitigation_method] --backbone SimpleCNN --wandb_name [wandb_name] --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --sensitive_name [subgroup] --sens_classes [n_subgroups] --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1  --random_seed [random_seed]
+# MNIST
+python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --groupdro_adj 1 --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1
 
-## CXP ##
-# baseline model
-python main.py --experiment baseline --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1 --random_seed [random_seed]
-# mitigation model
-python main.py --experiment [mitigation_method] --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --sensitive_name [subgroup] --sens_classes [n_subgroups] --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1 --random_seed [random_seed]
+# CXP
+python main.py --experiment baseline --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1
+
+# CelebA
+python main.py --experiment baseline --backbone cusResNet50 --wandb_name [wandb_name] --early_stopping 5 --dataset_name CELEBA --data_folder [data_folder] --pretrained True --total_epochs 10 --batch_size 256 --lr 0.001 --output_dim 1 --num_classes 1
+
+# Civil_comments
+python main.py --experiment baseline --backbone cusBERTClassifier --is_text True --optimizer AdamW --wandb_name [wandb_name] --early_stopping 5 --dataset_name CIVILCOMMENTS --data_folder [data_folder] --pretrained True --total_epochs 10 --batch_size 32 --lr 0.00005 --output_dim 1 --num_classes 1
+
 ```
-
 
 ### Process results
 
 Once all models have trained, process results by running the following commands:
 
 ```python
-python save_results.py --data [CheXpert or mnist] --method [mitigation_method] --root_folder [path_to_root_folder] --experiment_folder [parent_dir_where_experiments_are_saved] --data_folder [data_folder] --wandb_name [wandb_name] --random_seed_folders [random_seed_folders]
+python save_results.py --data ['CheXpert-v1.0-small','mnist','celeba','civilcomments'] --method [mitigation_method] --root_folder [path_to_root_folder] --experiment_folder [parent_dir_where_experiments_are_saved] --data_folder [data_folder] --wandb_name [wandb_name] --random_seed_folders [random_seed_folders]
 ```
 This will save dictionaries containing relevant analyses for each experiment in the `processed_results/` folder.
 
