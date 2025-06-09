@@ -1,6 +1,6 @@
 # Subgroups Matter for Robust Bias Mitigation
 
-This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation."**
+This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation"**.
 
 ## Introduction
 
