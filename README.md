@@ -1,12 +1,10 @@
 # Subgroups Matter for Robust Bias Mitigation
 
-This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation."**
-
-NB: Bias mitigation models forked and adapted from [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/): fairness benchmarking suite for medical imaging. 
+This repository contains the code for the ICML 2025 [paper](https://arxiv.org/abs/2505.21363) **"Subgroups Matter for Robust Bias Mitigation"**.
 
 ## Introduction
 
-In this work, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our main conclusion is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we argue that subgroup definition is as important of a step as, e.g., the choice of mitigation method, and requires careful consideration.
+In this paper, we seek to understand whether subgroup definition may contribute to the recently observed failures of bias mitigation methods. We conduct a comprehensive evaluation of state-of-the-art bias mitigation methods across multiple vision and language classification tasks, systematically varying subgroup definitions, including coarse, fine-grained, intersectional, and noisy subgroups. Our main conclusion is that **subgroup choice strongly impacts mitigation**, sometimes harming performance more than applying no mitigation at all. Overall, we argue that subgroup definition is as important of a step as, e.g., the choice of mitigation method, and requires careful consideration.
 
 This repo includes:
 - Code to generate biased datasets and different subgroups
@@ -65,16 +63,16 @@ To reproduce all the experiments in the paper, we provide example training scrip
 
 ```python
 # MNIST
-python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --groupdro_adj 1 --early_stopping 50 --dataset_name MNIST --data_folder [data_folder] --is_small True --total_epochs 50 --batch_size 128 --lr 0.001 --output_dim 1 --num_classes 1
+python main.py --experiment baseline_simple --backbone SimpleCNN --wandb_name [wandb_name] --dataset_name MNIST --data_folder [data_folder] --early_stopping 50 --is_small True --total_epochs 50 --batch_size 128 --lr 0.001
 
 # CXP
-python main.py --experiment baseline --early_stopping 10 --backbone cusDenseNet121 --wandb_name [wandb_name] --early_stopping 10 --dataset_name CXP --data_folder [data_folder] --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005 --output_dim 1 --num_classes 1
+python main.py --experiment baseline --backbone cusDenseNet121 --wandb_name [wandb_name] --dataset_name CXP --data_folder [data_folder] --early_stopping 10 --early_stopping 10 --pretrained True --total_epochs 100 --batch_size 256 --lr 0.0005
 
 # CelebA
-python main.py --experiment baseline --backbone cusResNet50 --wandb_name [wandb_name] --early_stopping 5 --dataset_name CELEBA --data_folder [data_folder] --pretrained True --total_epochs 10 --batch_size 256 --lr 0.001 --output_dim 1 --num_classes 1
+python main.py --experiment baseline --backbone cusResNet50 --wandb_name [wandb_name] --dataset_name CELEBA --data_folder [data_folder] --early_stopping 5 --pretrained True --total_epochs 10 --batch_size 256 --lr 0.001
 
 # Civil_comments
-python main.py --experiment baseline --backbone cusBERTClassifier --is_text True --optimizer AdamW --wandb_name [wandb_name] --early_stopping 5 --dataset_name CIVILCOMMENTS --data_folder [data_folder] --pretrained True --total_epochs 10 --batch_size 32 --lr 0.00005 --output_dim 1 --num_classes 1
+python main.py --experiment baseline --backbone cusBERTClassifier --wandb_name [wandb_name] --dataset_name CIVILCOMMENTS --data_folder [data_folder] --early_stopping 5 --pretrained True --is_text True --optimizer AdamW --total_epochs 10 --batch_size 32 --lr 0.00005
 
 ```
 
@@ -122,9 +120,9 @@ Please consider citing our paper if you find this repo useful.
 }
 ```
 
-## Acknowledgement
+## Acknowledgements
 
-We thank MEDFAIR authors and their detailed repo which provided initial code for this work and Harry Anthony for providing CheXPert pacemaker annotations.
+We thank [MEDFAIR](https://github.com/ys-zong/MEDFAIR/blob/main/) authors and their detailed repo which provided initial code for this work and Harry Anthony for providing CheXPert pacemaker annotations.
 ```
 @inproceedings{zong2023medfair,
     title={MEDFAIR: Benchmarking Fairness for Medical Imaging},
